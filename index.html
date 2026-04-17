@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Field Report · 6U Spring '26 Softball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff8fb8;
+    --pink-deep:#ff5e97;
+    --lav:#c3a4ff;
+    --mint:#8be3c5;
+    --sun:#ffd86b;
+    --cream:#fff7ec;
+    --ink:#3a2a4f;
+    --ink-soft:#6b5882;
+    --card:#ffffff;
+    --shadow:0 10px 30px rgba(120, 70, 160, 0.15);
+    --ring:0 0 0 4px rgba(255,94,151,0.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Baloo 2', system-ui, sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #ffd6e7 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, #d8c6ff 0%, transparent 55%),
+      radial-gradient(900px 500px at 50% 110%, #c6f2de 0%, transparent 55%),
+      linear-gradient(180deg,#fff7ec 0%, #ffe9f3 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* Floating decorations */
+  .deco{position:fixed; pointer-events:none; opacity:.55; z-index:0}
+  .deco.s1{top:8%;left:4%;transform:rotate(-12deg)}
+  .deco.s2{top:30%;right:5%;transform:rotate(18deg)}
+  .deco.s3{bottom:8%;left:8%;transform:rotate(8deg)}
+  .deco.s4{bottom:20%;right:10%;transform:rotate(-20deg)}
+  .deco svg{width:90px;height:90px;filter: drop-shadow(0 6px 12px rgba(0,0,0,0.08))}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-14px) rotate(var(--r,0deg))}}
+  .deco{animation:float 7s ease-in-out infinite}
+  .deco.s1{--r:-12deg;animation-delay:0s}
+  .deco.s2{--r:18deg;animation-delay:1.5s}
+  .deco.s3{--r:8deg;animation-delay:3s}
+  .deco.s4{--r:-20deg;animation-delay:4.5s}
+
+  header{
+    position:relative; z-index:1;
+    padding:56px 24px 16px; text-align:center;
+  }
+  .eyebrow{
+    display:inline-block;
+    background:linear-gradient(90deg, var(--pink-deep), var(--lav));
+    color:white; padding:6px 14px; border-radius:999px;
+    font-family:'Fredoka',sans-serif; font-weight:600; letter-spacing:.12em; font-size:12px;
+    text-transform:uppercase; box-shadow:var(--shadow);
+  }
+  h1{
+    font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size: clamp(36px, 6vw, 64px);
+    margin:12px 0 6px;
+    background:linear-gradient(90deg, #ff5e97 0%, #9a6bff 50%, #34c9a3 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    line-height:1.05;
+  }
+  .sub{font-size:18px;color:var(--ink-soft); margin:0 0 8px}
+  .meta{font-size:13px;color:var(--ink-soft); opacity:.8}
+
+  /* Tabs */
+  .tabs{
+    position:relative; z-index:1;
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    margin:26px auto 0; padding:0 16px; max-width:1100px;
+  }
+  .tab{
+    appearance:none; border:none; cursor:pointer;
+    background:white; color:var(--ink);
+    padding:12px 22px; border-radius:999px;
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px;
+    box-shadow:0 4px 16px rgba(120,70,160,0.10);
+    transition:transform .15s ease, box-shadow .15s ease, background .2s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .tab .dot{width:10px;height:10px;border-radius:50%}
+  .tab[data-k="Alo"] .dot{background:var(--pink)}
+  .tab[data-k="Finch"] .dot{background:var(--lav)}
+  .tab[data-k="Chamberlain"] .dot{background:var(--mint)}
+  .tab[data-k="Combined"] .dot{background:linear-gradient(45deg,var(--pink),var(--lav),var(--mint));}
+  .tab:hover{transform:translateY(-2px)}
+  .tab.active{
+    background:linear-gradient(90deg, var(--pink-deep), var(--lav));
+    color:white; box-shadow:var(--shadow);
+  }
+
+  main{position:relative; z-index:1; padding:24px 16px 80px; max-width:1200px; margin:0 auto}
+  .card{
+    background:var(--card);
+    border-radius:28px;
+    padding:22px 22px 8px;
+    box-shadow:var(--shadow);
+    margin-top:22px;
+    border:1px solid rgba(255,255,255,0.6);
+  }
+  .card-head{
+    display:flex; flex-wrap:wrap; align-items:center; gap:14px; justify-content:space-between;
+    padding:6px 6px 16px;
+  }
+  .card-title{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:28px; margin:0;
+    display:flex; align-items:center; gap:12px;
+  }
+  .pill{
+    font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    padding:5px 12px; border-radius:999px; color:#fff;
+  }
+  .pill.alo{background:linear-gradient(90deg,#ff7aa8,#ff5e97)}
+  .pill.finch{background:linear-gradient(90deg,#b494ff,#8a66ff)}
+  .pill.chamberlain{background:linear-gradient(90deg,#6fe0bd,#33b98e)}
+  .pill.combined{background:linear-gradient(90deg,var(--pink-deep),var(--lav),var(--mint))}
+  .hint{font-size:13px;color:var(--ink-soft)}
+
+  .tbl-wrap{overflow-x:auto; border-radius:18px}
+  table{
+    width:100%; border-collapse:separate; border-spacing:0;
+    font-size:15px;
+  }
+  thead th{
+    position:sticky; top:0;
+    background:#fdf3fb;
+    font-family:'Fredoka',sans-serif; font-weight:600;
+    text-align:left; padding:12px 14px;
+    border-bottom:2px solid #f5deee;
+    cursor:pointer; user-select:none;
+    white-space:nowrap; color:var(--ink);
+  }
+  thead th.num{text-align:right}
+  thead th .arrow{opacity:.35; margin-left:6px; font-size:12px}
+  thead th.sort-asc .arrow, thead th.sort-desc .arrow{opacity:1; color:var(--pink-deep)}
+  tbody td{
+    padding:12px 14px; border-bottom:1px solid #f5ebf3;
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fff6fb}
+  td.num{text-align:right; font-variant-numeric:tabular-nums}
+
+  .rank{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:50%;
+    background:#f2e9ff; color:var(--ink);
+    font-weight:700; font-size:14px;
+  }
+  .rank.r1{background:linear-gradient(135deg,#ffd86b,#ffb347); color:#553800; box-shadow:0 4px 12px rgba(255,180,0,.35)}
+  .rank.r2{background:linear-gradient(135deg,#e6e6e6,#bfbfbf); color:#2f2f2f}
+  .rank.r3{background:linear-gradient(135deg,#f4b184,#d98a5a); color:#3c1d0a}
+
+  .team{display:flex; align-items:center; gap:10px; font-weight:700}
+  .team .ball{
+    width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #fff, #fff2d8 60%, #f2d59b 100%);
+    position:relative; flex:none; box-shadow:inset 0 -2px 0 rgba(0,0,0,.05);
+  }
+  .team .ball::before, .team .ball::after{
+    content:""; position:absolute; inset:3px; border-radius:50%;
+    border:1.5px dashed #e36a9a; opacity:.75;
+    clip-path:inset(0 0 50% 0);
+  }
+  .team .ball::after{clip-path:inset(50% 0 0 0)}
+  .team .lg{font-size:11px; color:var(--ink-soft); font-weight:600; text-transform:uppercase; letter-spacing:.08em; margin-left:6px}
+
+  .bar{
+    position:relative; height:8px; width:100px; background:#f3eafb; border-radius:999px; overflow:hidden;
+    display:inline-block; vertical-align:middle; margin-right:8px;
+  }
+  .bar > span{
+    position:absolute; left:0; top:0; bottom:0;
+    background:linear-gradient(90deg, var(--pink-deep), var(--lav));
+    border-radius:999px;
+  }
+  .pct-val{font-variant-numeric:tabular-nums; font-weight:700}
+
+  .diff.pos{color:#0f9a74; font-weight:700}
+  .diff.neg{color:#c23663; font-weight:700}
+  .diff.zero{color:var(--ink-soft); font-weight:600}
+
+  .rem-pill{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:28px; height:28px; padding:0 8px; border-radius:14px;
+    background:#f3eafb; color:var(--ink); font-weight:700; font-size:14px;
+  }
+  .rem-pill.done{background:#d7f5ea; color:#0f9a74}
+
+  .next-cell{min-width:260px; line-height:1.25}
+  .next-line1{display:flex; align-items:center; gap:8px; font-weight:700}
+  .next-line2{font-size:13px; color:var(--ink-soft); margin-top:2px}
+  .next-line3{font-size:12px; color:var(--ink-soft); opacity:.85}
+  .next-opp{font-weight:800}
+  .ha-badge{
+    font-family:'Fredoka',sans-serif;
+    font-size:10px; letter-spacing:.1em;
+    padding:3px 8px; border-radius:999px; color:#fff;
+  }
+  .ha-badge.home{background:linear-gradient(90deg,#ff7aa8,#ff5e97)}
+  .ha-badge.away{background:linear-gradient(90deg,#b494ff,#8a66ff)}
+  .next-tbd{color:var(--ink-soft); font-style:italic}
+
+  /* Clickable team button */
+  .team-btn{
+    appearance:none; border:none; background:transparent; cursor:pointer;
+    padding:4px 8px 4px 4px; margin:-4px -8px -4px -4px;
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:inherit; font-size:inherit; font-weight:700; color:var(--ink);
+    border-radius:10px; transition:background .15s ease, transform .1s ease;
+  }
+  .team-btn:hover{background:#fbeaf4; color:var(--pink-deep)}
+  .team-btn:active{transform:scale(.98)}
+  .team-chev{
+    margin-left:auto; color:var(--pink-deep); font-size:18px; font-weight:800;
+    opacity:.5; transition:opacity .15s, transform .15s;
+  }
+  .team-btn:hover .team-chev{opacity:1; transform:translateX(2px)}
+
+  /* Modal */
+  .modal{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:20px}
+  .modal[hidden]{display:none}
+  .modal-backdrop{position:absolute; inset:0; background:rgba(58,42,79,.45); backdrop-filter:blur(4px)}
+  .modal-card{
+    position:relative; z-index:1; background:#fff;
+    width:min(720px, 100%); max-height:86vh; overflow-y:auto;
+    border-radius:26px; box-shadow:0 30px 80px rgba(120,70,160,0.35);
+    padding:28px 28px 22px;
+    animation:pop .2s ease;
+  }
+  .modal-x{
+    position:absolute; top:14px; right:14px;
+    width:36px; height:36px; border-radius:50%; border:none; cursor:pointer;
+    background:#f3eafb; color:var(--ink); font-size:22px; line-height:1; font-weight:700;
+  }
+  .modal-x:hover{background:#ffd6e7; color:var(--pink-deep)}
+
+  .mh{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:8px}
+  .mh-title{font-family:'Fredoka',sans-serif; font-weight:700; font-size:30px; margin:0}
+  .mh-sub{color:var(--ink-soft); font-size:14px; margin-top:2px}
+
+  .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 16px}
+  .stat{
+    flex:1 1 110px; min-width:110px; padding:10px 14px;
+    background:linear-gradient(180deg,#fff,#fff5fb);
+    border:1px solid #f5deee; border-radius:16px;
+  }
+  .stat .k{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); font-weight:700}
+  .stat .v{font-family:'Fredoka',sans-serif; font-weight:700; font-size:24px; color:var(--ink); line-height:1.1}
+
+  .mh-section{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:17px;
+    margin:18px 0 8px; display:flex; align-items:center; gap:8px;
+  }
+  .mh-section .count{
+    background:#fbeaf4; color:var(--pink-deep);
+    padding:2px 10px; border-radius:999px; font-size:13px; font-weight:700;
+  }
+
+  .game-list{display:flex; flex-direction:column; gap:8px}
+  .game-row{
+    display:grid; grid-template-columns: 92px 1fr auto; gap:10px; align-items:center;
+    padding:10px 14px; border-radius:14px;
+    background:#fff; border:1px solid #f0e4ec;
+  }
+  .game-row.win{border-color:#bde8d5; background:#f3fbf7}
+  .game-row.loss{border-color:#f7c8d7; background:#fdf3f7}
+  .game-row.tie{border-color:#e6d7ff; background:#f8f3ff}
+  .game-row.upcoming{border-color:#e9deff; background:#fbf7ff}
+  .gr-date{font-weight:700; font-size:14px}
+  .gr-time{font-size:12px; color:var(--ink-soft)}
+  .gr-opp{font-weight:700}
+  .gr-loc{font-size:12px; color:var(--ink-soft); margin-top:2px}
+  .gr-result{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:15px;
+    padding:4px 12px; border-radius:999px; white-space:nowrap;
+  }
+  .gr-result.win{background:#bde8d5; color:#0d7a5a}
+  .gr-result.loss{background:#f7c8d7; color:#a62157}
+  .gr-result.tie{background:#e6d7ff; color:#5a3f9c}
+  .gr-result.pending{background:#f3eafb; color:var(--ink-soft); font-style:italic}
+  .ha-inline{
+    display:inline-block; font-size:10px; letter-spacing:.1em; padding:2px 8px;
+    border-radius:999px; color:#fff; margin-right:6px; vertical-align:middle;
+  }
+  .ha-inline.home{background:#ff5e97}
+  .ha-inline.away{background:#8a66ff}
+  .empty{color:var(--ink-soft); font-style:italic; padding:8px 0}
+
+  @media (max-width:560px){
+    .game-row{grid-template-columns: 80px 1fr; row-gap:6px}
+    .gr-result{grid-column:1 / -1; justify-self:start}
+  }
+
+  .view{display:none}
+  .view.active{display:block; animation:pop .35s ease}
+  @keyframes pop{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+
+  footer{
+    position:relative; z-index:1; text-align:center; padding:8px 16px 40px;
+    color:var(--ink-soft); font-size:13px;
+  }
+  footer a{color:var(--pink-deep); text-decoration:none; font-weight:700}
+
+  @media (max-width:640px){
+    thead th, tbody td{padding:10px 10px; font-size:14px}
+    .bar{width:60px}
+    .team .lg{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating softball + hearts + sparkles -->
+<div class="deco s1">
+  <svg viewBox="0 0 64 64"><defs></defs>
+    <circle cx="32" cy="32" r="28" fill="#fff7ec" stroke="#f2c6dc" stroke-width="2"/>
+    <path d="M12 20 q20 14 40 0" stroke="#ff5e97" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+    <path d="M12 44 q20 -14 40 0" stroke="#ff5e97" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+  </svg>
+</div>
+<div class="deco s2">
+  <svg viewBox="0 0 64 64">
+    <path d="M32 56 C8 40 8 18 22 14 C28 12 32 18 32 22 C32 18 36 12 42 14 C56 18 56 40 32 56Z"
+          fill="#ff8fb8" stroke="#ff5e97" stroke-width="2"/>
+  </svg>
+</div>
+<div class="deco s3">
+  <svg viewBox="0 0 64 64">
+    <path d="M32 6 L36 26 L56 32 L36 38 L32 58 L28 38 L8 32 L28 26 Z" fill="#ffd86b" stroke="#e0a200" stroke-width="2"/>
+  </svg>
+</div>
+<div class="deco s4">
+  <svg viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="28" fill="#fff7ec" stroke="#c3a4ff" stroke-width="2"/>
+    <path d="M12 20 q20 14 40 0" stroke="#8a66ff" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+    <path d="M12 44 q20 -14 40 0" stroke="#8a66ff" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+  </svg>
+</div>
+
+<header>
+  <span class="eyebrow">Spring '26 • 6U Girls Softball</span>
+  <h1>The Field Report</h1>
+  <p class="sub">6U Spring '26 · Three leagues, one scoreboard. Let's play ball.</p>
+  <p class="meta">Source: sbmsa.net • Sort any column by clicking its header</p>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-k="Alo"><span class="dot"></span>6U Alo</button>
+  <button class="tab" data-k="Finch"><span class="dot"></span>6U Finch</button>
+  <button class="tab" data-k="Chamberlain"><span class="dot"></span>6U Chamberlain</button>
+  <button class="tab" data-k="Combined"><span class="dot"></span>All Leagues Combined</button>
+</nav>
+
+<main>
+  <section class="view active" data-view="Alo">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill alo">Alo</span>6U Alo Division</h2>
+        <span class="hint">Click a column header to sort</span>
+      </div>
+      <div class="tbl-wrap"><table id="tbl-Alo"></table></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="Finch">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill finch">Finch</span>6U Finch Division</h2>
+        <span class="hint">Click a column header to sort</span>
+      </div>
+      <div class="tbl-wrap"><table id="tbl-Finch"></table></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="Chamberlain">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill chamberlain">Chamberlain</span>6U Chamberlain Division</h2>
+        <span class="hint">Click a column header to sort</span>
+      </div>
+      <div class="tbl-wrap"><table id="tbl-Chamberlain"></table></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="Combined">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill combined">All 6U</span>Combined Standings</h2>
+        <span class="hint">Every team across all three leagues, head to head</span>
+      </div>
+      <div class="tbl-wrap"><table id="tbl-Combined"></table></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Built for the cheering section. Go have fun out there — and bring snacks. 🥎
+</footer>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-x" aria-label="Close" data-close>×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const GAMES = {"Alo":[{"date":"Mon 3/2","time":"6:00 PM","home":"Angels","away":"Bears","hs":"15","as":"4","loc":"SBE Field 1"},{"date":"Tue 3/3","time":"6:00 PM","home":"Starz","away":"Bombers","hs":"7","as":"15","loc":"SWMS Field 1"},{"date":"Wed 3/4","time":"6:00 PM","home":"Crush","away":"Blaze","hs":"9","as":"8","loc":"SBE Field 3"},{"date":"Mon 3/16","time":"6:00 PM","home":"Aggies","away":"Lightning","hs":"7","as":"6","loc":"SBE Field 1"},{"date":"Tue 3/17","time":"6:00 PM","home":"Storm","away":"Bears","hs":"12","as":"11","loc":"SWMS Field 1"},{"date":"Wed 3/18","time":"6:00 PM","home":"Lightning","away":"Starz","hs":"9","as":"6","loc":"SWMS Field 2"},{"date":"Thu 3/19","time":"6:00 PM","home":"Longhorns","away":"Comets","hs":"10","as":"9","loc":"SBE Field 1"},{"date":"Fri 3/20","time":"6:00 PM","home":"Force","away":"Panthers","hs":"10","as":"10","loc":"SBE Field 3"},{"date":"Fri 3/20","time":"6:00 PM","home":"Blaze","away":"Angels","hs":"11","as":"11","loc":"SWMS Field 1"},{"date":"Sat 3/21","time":"8:00 AM","home":"Comets","away":"Crush","hs":"11","as":"6","loc":"SWMS Field 4"},{"date":"Sat 3/21","time":"9:30 AM","home":"Panthers","away":"Aggies","hs":"10","as":"13","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"9:30 AM","home":"Bears","away":"Blaze","hs":"13","as":"12","loc":"SWMS Field 4"},{"date":"Sat 3/21","time":"11:00 AM","home":"Longhorns","away":"Force","hs":"4","as":"9","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"11:00 AM","home":"Bombers","away":"Storm","hs":"11","as":"10","loc":"SWMS Field 4"},{"date":"Mon 3/23","time":"5:45 PM","home":"Angels","away":"Comets","hs":"5","as":"17","loc":"SWMS Field 3"},{"date":"Mon 3/23","time":"6:00 PM","home":"Starz","away":"Panthers","hs":"11","as":"10","loc":"SBE Field 1"},{"date":"Mon 3/23","time":"6:00 PM","home":"Bombers","away":"Lightning","hs":"16","as":"15","loc":"SWMS Field 2"},{"date":"Wed 3/25","time":"6:00 PM","home":"Aggies","away":"Longhorns","hs":"9","as":"8","loc":"SWMS Field 1"},{"date":"Thu 3/26","time":"6:00 PM","home":"Force","away":"Crush","hs":"9","as":"11","loc":"SBE Field 1"},{"date":"Thu 3/26","time":"6:00 PM","home":"Storm","away":"Blaze","hs":"6","as":"15","loc":"SWMS Field 1"},{"date":"Thu 3/26","time":"6:00 PM","home":"Comets","away":"Bears","hs":"15","as":"8","loc":"SWMS Field 2"},{"date":"Sat 3/28","time":"8:00 AM","home":"Lightning","away":"Storm","hs":"7","as":"5","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"9:30 AM","home":"Blaze","away":"Comets","hs":"7","as":"13","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"11:00 AM","home":"Force","away":"Angels","hs":"8","as":"10","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"2:00 PM","home":"Longhorns","away":"Starz","hs":"10","as":"12","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"3:30 PM","home":"Panthers","away":"Bombers","hs":"6","as":"15","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"5:00 PM","home":"Crush","away":"Aggies","hs":"9","as":"11","loc":"SWMS Field 3"},{"date":"Tue 3/31","time":"6:00 PM","home":"Bears","away":"Force","hs":"13","as":"12","loc":"SBE Field 1"},{"date":"Tue 3/31","time":"6:00 PM","home":"Aggies","away":"Angels","hs":"12","as":"7","loc":"SWMS Field 2"},{"date":"Mon 4/6","time":"5:45 PM","home":"Lightning","away":"Panthers","hs":"10","as":"6","loc":"SWMS Field 3"},{"date":"Mon 4/6","time":"6:00 PM","home":"Storm","away":"Comets","hs":"4","as":"12","loc":"SWMS Field 1"},{"date":"Wed 4/8","time":"5:45 PM","home":"Starz","away":"Crush","hs":"8","as":"10","loc":"SWMS Field 3"},{"date":"Sat 4/11","time":"11:00 AM","home":"Bombers","away":"Longhorns","hs":"11","as":"7","loc":"SWMS Field 3"},{"date":"Sat 4/11","time":"11:00 AM","home":"Panthers","away":"Storm","hs":"10","as":"7","loc":"SWMS Field 4"},{"date":"Sat 4/11","time":"12:30 PM","home":"Bears","away":"Aggies","hs":"6","as":"12","loc":"SWMS Field 3"},{"date":"Mon 4/13","time":"5:45 PM","home":"Starz","away":"Bears","hs":"15","as":"12","loc":"SWMS Field 3"},{"date":"Tue 4/14","time":"6:00 PM","home":"Comets","away":"Force","hs":"12","as":"4","loc":"SBE Field 1"},{"date":"Tue 4/14","time":"6:00 PM","home":"Crush","away":"Bombers","hs":"11","as":"9","loc":"SWMS Field 2"},{"date":"Wed 4/15","time":"5:45 PM","home":"Angels","away":"Starz","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Thu 4/16","time":"5:45 PM","home":"Blaze","away":"Aggies","hs":"6","as":"15","loc":"SWMS Field 3"},{"date":"Thu 4/16","time":"6:00 PM","home":"Longhorns","away":"Lightning","hs":"12","as":"12","loc":"SBE Field 1"},{"date":"Sat 4/18","time":"9:30 AM","home":"Storm","away":"Force","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"9:30 AM","home":"Aggies","away":"Comets","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/18","time":"11:00 AM","home":"Blaze","away":"Force","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"11:00 AM","home":"Panthers","away":"Longhorns","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/18","time":"3:30 PM","home":"Lightning","away":"Crush","hs":"","as":"","loc":"SBE Field 3"},{"date":"Mon 4/20","time":"5:45 PM","home":"Panthers","away":"Angels","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Mon 4/20","time":"6:00 PM","home":"Force","away":"Aggies","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Tue 4/21","time":"5:45 PM","home":"Bombers","away":"Angels","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Wed 4/22","time":"5:45 PM","home":"Longhorns","away":"Storm","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Wed 4/22","time":"6:00 PM","home":"Crush","away":"Panthers","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Thu 4/23","time":"6:00 PM","home":"Comets","away":"Starz","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Fri 4/24","time":"5:45 PM","home":"Starz","away":"Blaze","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/25","time":"8:00 AM","home":"Angels","away":"Lightning","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"9:30 AM","home":"Bears","away":"Bombers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"9:30 AM","home":"Crush","away":"Longhorns","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/25","time":"11:00 AM","home":"Aggies","away":"Storm","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"11:00 AM","home":"Starz","away":"Force","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Mon 4/27","time":"6:00 PM","home":"Lightning","away":"Bears","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Tue 4/28","time":"6:00 PM","home":"Bombers","away":"Blaze","hs":"","as":"","loc":"SBE Field 1"},{"date":"Sat 5/2","time":"8:00 AM","home":"Storm","away":"Crush","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 5/2","time":"9:30 AM","home":"Angels","away":"Longhorns","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 5/2","time":"11:00 AM","home":"Bears","away":"Panthers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 5/2","time":"12:30 PM","home":"Comets","away":"Bombers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 5/2","time":"2:00 PM","home":"Blaze","away":"Lightning","hs":"","as":"","loc":"SWMS Field 3"}],"Finch":[{"date":"Mon 3/2","time":"6:00 PM","home":"Voodoo","away":"Venom","hs":"12","as":"9","loc":"SWMS Field 1"},{"date":"Tue 3/3","time":"6:00 PM","home":"Space Cowgirls","away":"Fury","hs":"8","as":"7","loc":"SBE Field 3"},{"date":"Wed 3/4","time":"6:00 PM","home":"Cowgirls","away":"Hurricanes","hs":"10","as":"15","loc":"SBE Field 1"},{"date":"Mon 3/16","time":"6:00 PM","home":"Magic","away":"Thunder","hs":"15","as":"0","loc":"SWMS Field 1"},{"date":"Tue 3/17","time":"6:00 PM","home":"Cowgirls","away":"Venom","hs":"7","as":"12","loc":"SWMS Field 2"},{"date":"Wed 3/18","time":"6:00 PM","home":"Dragons","away":"Aces","hs":"9","as":"8","loc":"SBE Field 1"},{"date":"Thu 3/19","time":"6:00 PM","home":"Wildcats","away":"Sliders","hs":"4","as":"15","loc":"SWMS Field 1"},{"date":"Fri 3/20","time":"6:00 PM","home":"Fury","away":"Hurricanes","hs":"7","as":"10","loc":"SWMS Field 2"},{"date":"Sat 3/21","time":"3:30 PM","home":"Aces","away":"Voodoo","hs":"6","as":"7","loc":"SWMS Field 1"},{"date":"Sat 3/21","time":"3:30 PM","home":"Wildcats","away":"Magic","hs":"11","as":"11","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"5:00 PM","home":"Thunder","away":"Space Cowgirls","hs":"9","as":"15","loc":"SWMS Field 1"},{"date":"Sat 3/21","time":"5:00 PM","home":"Fury","away":"Cowgirls","hs":"10","as":"9","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"5:00 PM","home":"Sliders","away":"Dragons","hs":"15","as":"5","loc":"SWMS Field 4"},{"date":"Mon 3/23","time":"5:45 PM","home":"Venom","away":"Aces","hs":"11","as":"7","loc":"SWMS Field 4"},{"date":"Tue 3/24","time":"5:45 PM","home":"Voodoo","away":"Sliders","hs":"5","as":"15","loc":"SWMS Field 3"},{"date":"Wed 3/25","time":"6:00 PM","home":"Hurricanes","away":"Thunder","hs":"11","as":"6","loc":"SBE Field 1"},{"date":"Wed 3/25","time":"6:00 PM","home":"Dragons","away":"Magic","hs":"12","as":"11","loc":"SWMS Field 2"},{"date":"Fri 3/27","time":"6:00 PM","home":"Space Cowgirls","away":"Wildcats","hs":"12","as":"11","loc":"SWMS Field 1"},{"date":"Sat 3/28","time":"8:00 AM","home":"Cowgirls","away":"Aces","hs":"10","as":"9","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"9:30 AM","home":"Thunder","away":"Fury","hs":"8","as":"15","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"11:00 AM","home":"Sliders","away":"Venom","hs":"12","as":"4","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"12:30 PM","home":"Wildcats","away":"Hurricanes","hs":"7","as":"10","loc":"SWMS Field 3"},{"date":"Sat 3/28","time":"5:00 PM","home":"Magic","away":"Voodoo","hs":"11","as":"10","loc":"SWMS Field 4"},{"date":"Mon 3/30","time":"6:00 PM","home":"Dragons","away":"Space Cowgirls","hs":"4","as":"15","loc":"SBE Field 1"},{"date":"Mon 3/30","time":"6:00 PM","home":"Aces","away":"Sliders","hs":"10","as":"13","loc":"SWMS Field 2"},{"date":"Thu 4/2","time":"6:00 PM","home":"Thunder","away":"Cowgirls","hs":"12","as":"11","loc":"SBE Field 1"},{"date":"Thu 4/2","time":"6:00 PM","home":"Fury","away":"Wildcats","hs":"12","as":"11","loc":"SWMS Field 2"},{"date":"Mon 4/6","time":"5:45 PM","home":"Venom","away":"Space Cowgirls","hs":"14","as":"13","loc":"SWMS Field 4"},{"date":"Tue 4/7","time":"5:45 PM","home":"Venom","away":"Magic","hs":"11","as":"8","loc":"SWMS Field 4"},{"date":"Mon 4/13","time":"5:45 PM","home":"Space Cowgirls","away":"Sliders","hs":"10","as":"14","loc":"SWMS Field 4"},{"date":"Tue 4/14","time":"5:45 PM","home":"Sliders","away":"Magic","hs":"12","as":"7","loc":"SWMS Field 4"},{"date":"Tue 4/14","time":"6:00 PM","home":"Dragons","away":"Fury","hs":"11","as":"12","loc":"SBE Field 3"},{"date":"Tue 4/14","time":"6:00 PM","home":"Voodoo","away":"Hurricanes","hs":"11","as":"20","loc":"SWMS Field 1"},{"date":"Fri 4/17","time":"5:45 PM","home":"Thunder","away":"Dragons","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Fri 4/17","time":"6:00 PM","home":"Cowgirls","away":"Wildcats","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Sat 4/18","time":"2:00 PM","home":"Dragons","away":"Wildcats","hs":"","as":"","loc":"SBE Field 3"},{"date":"Sat 4/18","time":"3:30 PM","home":"Aces","away":"Space Cowgirls","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Sat 4/18","time":"3:30 PM","home":"Fury","away":"Voodoo","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"5:00 PM","home":"Hurricanes","away":"Venom","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"5:00 PM","home":"Magic","away":"Cowgirls","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sun 4/19","time":"1:00 PM","home":"Hurricanes","away":"Dragons","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sun 4/19","time":"1:00 PM","home":"Magic","away":"Aces","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sun 4/19","time":"4:00 PM","home":"Space Cowgirls","away":"Voodoo","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sun 4/19","time":"5:30 PM","home":"Sliders","away":"Cowgirls","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sun 4/19","time":"5:30 PM","home":"Wildcats","away":"Thunder","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Mon 4/20","time":"5:45 PM","home":"Magic","away":"Space Cowgirls","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Mon 4/20","time":"6:00 PM","home":"Voodoo","away":"Thunder","hs":"","as":"","loc":"SBE Field 1"},{"date":"Mon 4/20","time":"6:00 PM","home":"Aces","away":"Hurricanes","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Wed 4/22","time":"6:00 PM","home":"Cowgirls","away":"Dragons","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Thu 4/23","time":"5:45 PM","home":"Venom","away":"Fury","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"8:00 AM","home":"Fury","away":"Aces","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/25","time":"3:30 PM","home":"Hurricanes","away":"Sliders","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"5:00 PM","home":"Wildcats","away":"Voodoo","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Sat 4/25","time":"5:00 PM","home":"Thunder","away":"Venom","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"5:00 PM","home":"Space Cowgirls","away":"Cowgirls","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Mon 4/27","time":"6:00 PM","home":"Voodoo","away":"Dragons","hs":"","as":"","loc":"SBE Field 1"},{"date":"Wed 4/29","time":"6:00 PM","home":"Venom","away":"Wildcats","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Wed 4/29","time":"6:00 PM","home":"Sliders","away":"Fury","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Thu 4/30","time":"6:00 PM","home":"Hurricanes","away":"Magic","hs":"","as":"","loc":"SBE Field 1"},{"date":"Sat 5/2","time":"2:00 PM","home":"Aces","away":"Thunder","hs":"","as":"","loc":"SBE Field 3"}],"Chamberlain":[{"date":"Mon 3/2","time":"6:00 PM","home":"Cobras","away":"Diamonds","hs":"5","as":"12","loc":"SBE Field 3"},{"date":"Tue 3/3","time":"6:00 PM","home":"Tornados","away":"Oilers","hs":"8","as":"12","loc":"SBE Field 1"},{"date":"Wed 3/4","time":"6:00 PM","home":"Chargers","away":"Frogs","hs":"7","as":"8","loc":"SWMS Field 1"},{"date":"Mon 3/16","time":"6:00 PM","home":"Monarchs","away":"Firecrackers","hs":"8","as":"6","loc":"SWMS Field 2"},{"date":"Tue 3/17","time":"6:00 PM","home":"Typhoons","away":"Tigers","hs":"11","as":"10","loc":"SBE Field 1"},{"date":"Wed 3/18","time":"6:00 PM","home":"Eagles","away":"Landsharks","hs":"10","as":"14","loc":"SWMS Field 1"},{"date":"Thu 3/19","time":"6:00 PM","home":"Diamonds","away":"Oilers","hs":"8","as":"5","loc":"SWMS Field 2"},{"date":"Sat 3/21","time":"12:30 PM","home":"Tigers","away":"Chargers","hs":"10","as":"14","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"12:30 PM","home":"Landsharks","away":"Typhoons","hs":"4","as":"15","loc":"SWMS Field 4"},{"date":"Sat 3/21","time":"2:00 PM","home":"Firecrackers","away":"Cobras","hs":"2","as":"12","loc":"SWMS Field 3"},{"date":"Sat 3/21","time":"2:00 PM","home":"Eagles","away":"Monarchs","hs":"5","as":"18","loc":"SWMS Field 4"},{"date":"Sat 3/21","time":"3:30 PM","home":"Diamonds","away":"Tornados","hs":"14","as":"5","loc":"SWMS Field 4"},{"date":"Mon 3/23","time":"6:00 PM","home":"Chargers","away":"Landsharks","hs":"14","as":"13","loc":"SWMS Field 1"},{"date":"Tue 3/24","time":"5:45 PM","home":"Cobras","away":"Eagles","hs":"15","as":"2","loc":"SWMS Field 4"},{"date":"Tue 3/24","time":"6:00 PM","home":"Frogs","away":"Tigers","hs":"12","as":"10","loc":"SWMS Field 2"},{"date":"Wed 3/25","time":"5:45 PM","home":"Typhoons","away":"Monarchs","hs":"11","as":"8","loc":"SWMS Field 3"},{"date":"Fri 3/27","time":"6:00 PM","home":"Oilers","away":"Firecrackers","hs":"7","as":"6","loc":"SBE Field 1"},{"date":"Sat 3/28","time":"12:30 PM","home":"Tornados","away":"Tigers","hs":"10","as":"16","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"2:00 PM","home":"Firecrackers","away":"Diamonds","hs":"2","as":"12","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"3:30 PM","home":"Eagles","away":"Oilers","hs":"5","as":"15","loc":"SWMS Field 1"},{"date":"Sat 3/28","time":"3:30 PM","home":"Landsharks","away":"Frogs","hs":"6","as":"18","loc":"SWMS Field 4"},{"date":"Sat 3/28","time":"5:00 PM","home":"Monarchs","away":"Chargers","hs":"13","as":"12","loc":"SWMS Field 1"},{"date":"Sat 3/28","time":"6:30 PM","home":"Typhoons","away":"Cobras","hs":"12","as":"8","loc":"SWMS Field 1"},{"date":"Wed 4/1","time":"6:00 PM","home":"Firecrackers","away":"Tornados","hs":"10","as":"2","loc":"SBE Field 1"},{"date":"Wed 4/1","time":"6:00 PM","home":"Tigers","away":"Landsharks","hs":"15","as":"5","loc":"SWMS Field 2"},{"date":"Mon 4/6","time":"6:00 PM","home":"Diamonds","away":"Eagles","hs":"14","as":"3","loc":"SBE Field 1"},{"date":"Tue 4/7","time":"5:45 PM","home":"Oilers","away":"Typhoons","hs":"5","as":"5","loc":"SWMS Field 3"},{"date":"Wed 4/8","time":"5:45 PM","home":"Frogs","away":"Monarchs","hs":"9","as":"7","loc":"SWMS Field 4"},{"date":"Sat 4/11","time":"12:30 PM","home":"Landsharks","away":"Tornados","hs":"12","as":"5","loc":"SWMS Field 4"},{"date":"Tue 4/14","time":"5:45 PM","home":"Frogs","away":"Cobras","hs":"12","as":"5","loc":"SWMS Field 3"},{"date":"Tue 4/14","time":"6:00 PM","home":"Tornados","away":"Eagles","hs":"9","as":"12","loc":"SBE Field 2"},{"date":"Wed 4/15","time":"5:45 PM","home":"Cobras","away":"Chargers","hs":"8","as":"10","loc":"SWMS Field 3"},{"date":"Thu 4/16","time":"5:45 PM","home":"Landsharks","away":"Monarchs","hs":"5","as":"15","loc":"SWMS Field 4"},{"date":"Fri 4/17","time":"5:45 PM","home":"Chargers","away":"Oilers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"12:30 PM","home":"Firecrackers","away":"Typhoons","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"12:30 PM","home":"Diamonds","away":"Chargers","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/18","time":"2:00 PM","home":"Tigers","away":"Cobras","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/18","time":"2:00 PM","home":"Oilers","away":"Frogs","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/18","time":"3:30 PM","home":"Monarchs","away":"Tornados","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sun 4/19","time":"2:30 PM","home":"Typhoons","away":"Diamonds","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sun 4/19","time":"2:30 PM","home":"Eagles","away":"Firecrackers","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sun 4/19","time":"4:00 PM","home":"Monarchs","away":"Tigers","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Tue 4/21","time":"5:45 PM","home":"Cobras","away":"Tornados","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Tue 4/21","time":"6:00 PM","home":"Chargers","away":"Firecrackers","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Tue 4/21","time":"6:00 PM","home":"Frogs","away":"Diamonds","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Wed 4/22","time":"5:45 PM","home":"Typhoons","away":"Eagles","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Thu 4/23","time":"5:45 PM","home":"Tornados","away":"Frogs","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Fri 4/24","time":"5:45 PM","home":"Tigers","away":"Oilers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Fri 4/24","time":"6:00 PM","home":"Cobras","away":"Landsharks","hs":"","as":"","loc":"SBE Field 1"},{"date":"Fri 4/24","time":"6:00 PM","home":"Tornados","away":"Typhoons","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Sat 4/25","time":"12:30 PM","home":"Monarchs","away":"Cobras","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"12:30 PM","home":"Oilers","away":"Landsharks","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/25","time":"2:00 PM","home":"Eagles","away":"Chargers","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 4/25","time":"2:00 PM","home":"Firecrackers","away":"Frogs","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Sat 4/25","time":"3:30 PM","home":"Diamonds","away":"Tigers","hs":"","as":"","loc":"SWMS Field 4"},{"date":"Tue 4/28","time":"6:00 PM","home":"Oilers","away":"Monarchs","hs":"","as":"","loc":"SWMS Field 1"},{"date":"Tue 4/28","time":"6:00 PM","home":"Frogs","away":"Eagles","hs":"","as":"","loc":"SWMS Field 2"},{"date":"Wed 4/29","time":"6:00 PM","home":"Chargers","away":"Typhoons","hs":"","as":"","loc":"SBE Field 1"},{"date":"Sat 5/2","time":"3:30 PM","home":"Landsharks","away":"Diamonds","hs":"","as":"","loc":"SWMS Field 3"},{"date":"Sat 5/2","time":"5:00 PM","home":"Tigers","away":"Firecrackers","hs":"","as":"","loc":"SWMS Field 3"}]};
+const DATA ={"Alo":{"Angels":{"W":2,"L":2,"T":1,"RF":48,"RA":52,"GP":5,"REM":4,"NEXT":{"opp":"Panthers","ha":"@","date":"Mon 4/20","time":"5:45 PM","loc":"SWMS Field 3"}},"Bears":{"W":2,"L":5,"T":0,"RF":67,"RA":93,"GP":7,"REM":3,"NEXT":{"opp":"Bombers","ha":"vs","date":"Sat 4/25","time":"9:30 AM","loc":"SWMS Field 3"}},"Starz":{"W":3,"L":3,"T":0,"RF":59,"RA":66,"GP":6,"REM":3,"NEXT":{"opp":"Comets","ha":"@","date":"Thu 4/23","time":"6:00 PM","loc":"SWMS Field 2"}},"Bombers":{"W":5,"L":1,"T":0,"RF":77,"RA":56,"GP":6,"REM":4,"NEXT":{"opp":"Angels","ha":"vs","date":"Tue 4/21","time":"5:45 PM","loc":"SWMS Field 4"}},"Crush":{"W":4,"L":2,"T":0,"RF":56,"RA":56,"GP":6,"REM":4,"NEXT":{"opp":"Lightning","ha":"@","date":"Sat 4/18","time":"3:30 PM","loc":"SBE Field 3"}},"Blaze":{"W":1,"L":4,"T":1,"RF":59,"RA":67,"GP":6,"REM":4,"NEXT":{"opp":"Force","ha":"vs","date":"Sat 4/18","time":"11:00 AM","loc":"SWMS Field 3"}},"Aggies":{"W":7,"L":0,"T":0,"RF":79,"RA":52,"GP":7,"REM":3,"NEXT":{"opp":"Comets","ha":"vs","date":"Sat 4/18","time":"9:30 AM","loc":"SWMS Field 4"}},"Lightning":{"W":3,"L":2,"T":1,"RF":59,"RA":52,"GP":6,"REM":4,"NEXT":{"opp":"Crush","ha":"vs","date":"Sat 4/18","time":"3:30 PM","loc":"SBE Field 3"}},"Storm":{"W":1,"L":5,"T":0,"RF":44,"RA":66,"GP":6,"REM":4,"NEXT":{"opp":"Force","ha":"vs","date":"Sat 4/18","time":"9:30 AM","loc":"SWMS Field 3"}},"Longhorns":{"W":1,"L":4,"T":1,"RF":51,"RA":62,"GP":6,"REM":4,"NEXT":{"opp":"Panthers","ha":"@","date":"Sat 4/18","time":"11:00 AM","loc":"SWMS Field 4"}},"Comets":{"W":6,"L":1,"T":0,"RF":89,"RA":44,"GP":7,"REM":3,"NEXT":{"opp":"Aggies","ha":"@","date":"Sat 4/18","time":"9:30 AM","loc":"SWMS Field 4"}},"Force":{"W":1,"L":4,"T":1,"RF":52,"RA":60,"GP":6,"REM":4,"NEXT":{"opp":"Storm","ha":"@","date":"Sat 4/18","time":"9:30 AM","loc":"SWMS Field 3"}},"Panthers":{"W":1,"L":4,"T":1,"RF":52,"RA":66,"GP":6,"REM":4,"NEXT":{"opp":"Longhorns","ha":"vs","date":"Sat 4/18","time":"11:00 AM","loc":"SWMS Field 4"}}},"Finch":{"Voodoo":{"W":2,"L":3,"T":0,"RF":45,"RA":61,"GP":5,"REM":5,"NEXT":{"opp":"Fury","ha":"@","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 3"}},"Venom":{"W":4,"L":2,"T":0,"RF":61,"RA":59,"GP":6,"REM":4,"NEXT":{"opp":"Hurricanes","ha":"@","date":"Sat 4/18","time":"5:00 PM","loc":"SWMS Field 3"}},"Space Cowgirls":{"W":4,"L":2,"T":0,"RF":73,"RA":59,"GP":6,"REM":4,"NEXT":{"opp":"Aces","ha":"@","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 1"}},"Fury":{"W":4,"L":2,"T":0,"RF":63,"RA":57,"GP":6,"REM":4,"NEXT":{"opp":"Voodoo","ha":"vs","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 3"}},"Cowgirls":{"W":1,"L":4,"T":0,"RF":47,"RA":58,"GP":5,"REM":5,"NEXT":{"opp":"Wildcats","ha":"vs","date":"Fri 4/17","time":"6:00 PM","loc":"SWMS Field 1"}},"Hurricanes":{"W":5,"L":0,"T":0,"RF":66,"RA":41,"GP":5,"REM":5,"NEXT":{"opp":"Venom","ha":"vs","date":"Sat 4/18","time":"5:00 PM","loc":"SWMS Field 3"}},"Magic":{"W":2,"L":3,"T":1,"RF":63,"RA":56,"GP":6,"REM":4,"NEXT":{"opp":"Cowgirls","ha":"vs","date":"Sat 4/18","time":"5:00 PM","loc":"SWMS Field 4"}},"Thunder":{"W":1,"L":4,"T":0,"RF":35,"RA":67,"GP":5,"REM":5,"NEXT":{"opp":"Dragons","ha":"vs","date":"Fri 4/17","time":"5:45 PM","loc":"SWMS Field 4"}},"Dragons":{"W":2,"L":3,"T":0,"RF":41,"RA":61,"GP":5,"REM":5,"NEXT":{"opp":"Thunder","ha":"@","date":"Fri 4/17","time":"5:45 PM","loc":"SWMS Field 4"}},"Aces":{"W":0,"L":5,"T":0,"RF":40,"RA":50,"GP":5,"REM":5,"NEXT":{"opp":"Space Cowgirls","ha":"vs","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 1"}},"Wildcats":{"W":0,"L":4,"T":1,"RF":44,"RA":60,"GP":5,"REM":5,"NEXT":{"opp":"Cowgirls","ha":"@","date":"Fri 4/17","time":"6:00 PM","loc":"SWMS Field 1"}},"Sliders":{"W":7,"L":0,"T":0,"RF":96,"RA":45,"GP":7,"REM":3,"NEXT":{"opp":"Cowgirls","ha":"vs","date":"Sun 4/19","time":"5:30 PM","loc":"SWMS Field 3"}}},"Chamberlain":{"Cobras":{"W":2,"L":4,"T":0,"RF":53,"RA":50,"GP":6,"REM":4,"NEXT":{"opp":"Tigers","ha":"@","date":"Sat 4/18","time":"2:00 PM","loc":"SWMS Field 3"}},"Diamonds":{"W":5,"L":0,"T":0,"RF":60,"RA":20,"GP":5,"REM":5,"NEXT":{"opp":"Chargers","ha":"vs","date":"Sat 4/18","time":"12:30 PM","loc":"SWMS Field 4"}},"Tornados":{"W":0,"L":6,"T":0,"RF":39,"RA":76,"GP":6,"REM":4,"NEXT":{"opp":"Monarchs","ha":"@","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 4"}},"Oilers":{"W":3,"L":1,"T":1,"RF":44,"RA":32,"GP":5,"REM":5,"NEXT":{"opp":"Chargers","ha":"@","date":"Fri 4/17","time":"5:45 PM","loc":"SWMS Field 3"}},"Chargers":{"W":3,"L":2,"T":0,"RF":57,"RA":52,"GP":5,"REM":5,"NEXT":{"opp":"Oilers","ha":"vs","date":"Fri 4/17","time":"5:45 PM","loc":"SWMS Field 3"}},"Frogs":{"W":5,"L":0,"T":0,"RF":59,"RA":35,"GP":5,"REM":5,"NEXT":{"opp":"Oilers","ha":"@","date":"Sat 4/18","time":"2:00 PM","loc":"SWMS Field 4"}},"Monarchs":{"W":4,"L":2,"T":0,"RF":69,"RA":48,"GP":6,"REM":4,"NEXT":{"opp":"Tornados","ha":"vs","date":"Sat 4/18","time":"3:30 PM","loc":"SWMS Field 4"}},"Firecrackers":{"W":1,"L":4,"T":0,"RF":26,"RA":41,"GP":5,"REM":5,"NEXT":{"opp":"Typhoons","ha":"vs","date":"Sat 4/18","time":"12:30 PM","loc":"SWMS Field 3"}},"Typhoons":{"W":4,"L":0,"T":1,"RF":54,"RA":35,"GP":5,"REM":5,"NEXT":{"opp":"Firecrackers","ha":"@","date":"Sat 4/18","time":"12:30 PM","loc":"SWMS Field 3"}},"Tigers":{"W":2,"L":3,"T":0,"RF":61,"RA":52,"GP":5,"REM":5,"NEXT":{"opp":"Cobras","ha":"vs","date":"Sat 4/18","time":"2:00 PM","loc":"SWMS Field 3"}},"Eagles":{"W":1,"L":5,"T":0,"RF":37,"RA":85,"GP":6,"REM":4,"NEXT":{"opp":"Firecrackers","ha":"vs","date":"Sun 4/19","time":"2:30 PM","loc":"SWMS Field 4"}},"Landsharks":{"W":2,"L":5,"T":0,"RF":59,"RA":92,"GP":7,"REM":3,"NEXT":{"opp":"Cobras","ha":"@","date":"Fri 4/24","time":"6:00 PM","loc":"SBE Field 1"}}}};
+
+// Parse "Wed 4/15" + "5:45 PM" into a sortable number. null/TBD sorts last.
+function nextSortKey(n){
+  if (!n) return Number.POSITIVE_INFINITY;
+  const md = /(\d+)\/(\d+)/.exec(n.date || '');
+  if (!md) return Number.POSITIVE_INFINITY;
+  const mo = +md[1], da = +md[2];
+  const yr = mo >= 2 ? 2026 : 2027;
+  let h=0, mi=0;
+  const tm = /(\d+):(\d+)\s*(AM|PM)/.exec(n.time || '');
+  if (tm){ h = (+tm[1]) % 12; if (tm[3]==='PM') h += 12; mi = +tm[2]; }
+  return new Date(yr, mo-1, da, h, mi).getTime();
+}
+
+// Build rows
+function buildRows(leagueKey){
+  const rows = [];
+  const add = (team, league, r) => {
+    const gp = r.W + r.L + r.T;
+    const pct = gp ? (r.W + 0.5*r.T) / gp : 0;
+    rows.push({
+      team, league,
+      W:r.W, L:r.L, T:r.T, GP:gp,
+      RF:r.RF, RA:r.RA, DIFF:r.RF-r.RA,
+      PCT:pct,
+      REM:r.REM||0, NEXT:r.NEXT||null,
+      NEXT_KEY: nextSortKey(r.NEXT)
+    });
+  };
+  if (leagueKey === 'Combined'){
+    for (const [lg, teams] of Object.entries(DATA)){
+      for (const [t, r] of Object.entries(teams)) add(t, lg, r);
+    }
+  } else {
+    for (const [t, r] of Object.entries(DATA[leagueKey])) add(t, leagueKey, r);
+  }
+  return rows;
+}
+
+const COLS = [
+  { k:'rank',  label:'#',     num:true,  sortable:false },
+  { k:'team',  label:'Team',  num:false, sortable:true  },
+  { k:'W',     label:'W',     num:true,  sortable:true  },
+  { k:'L',     label:'L',     num:true,  sortable:true  },
+  { k:'T',     label:'T',     num:true,  sortable:true  },
+  { k:'GP',    label:'GP',    num:true,  sortable:true  },
+  { k:'PCT',   label:'Win %', num:true,  sortable:true  },
+  { k:'RF',    label:'Runs For',     num:true, sortable:true },
+  { k:'RA',    label:'Runs Against', num:true, sortable:true },
+  { k:'DIFF',  label:'Diff',  num:true,  sortable:true  },
+  { k:'REM',   label:'Games Left', num:true, sortable:true },
+  { k:'NEXT',  label:'Next Game', num:false, sortable:true },
+];
+
+const state = {}; // per-table sort state
+
+function renderTable(leagueKey){
+  const tbl = document.getElementById('tbl-' + leagueKey);
+  const showLeague = leagueKey === 'Combined';
+  const rows = buildRows(leagueKey);
+  const s = state[leagueKey] || (state[leagueKey] = { key:'PCT', dir:'desc' });
+  rows.sort((a,b) => cmp(a,b,s.key,s.dir));
+  // rank (by current sort order) — always numeric rank by position
+  rows.forEach((r,i)=> r.rank = i+1);
+
+  // header
+  let thead = '<thead><tr>';
+  for (const c of COLS){
+    const cls = [c.num?'num':'', s.key===c.k ? (s.dir==='asc'?'sort-asc':'sort-desc') : ''].filter(Boolean).join(' ');
+    const arrow = c.sortable ? `<span class="arrow">${s.key===c.k?(s.dir==='asc'?'▲':'▼'):'↕'}</span>` : '';
+    thead += `<th class="${cls}" data-key="${c.k}" data-sortable="${c.sortable}">${c.label}${arrow}</th>`;
+  }
+  thead += '</tr></thead>';
+
+  // body
+  let tbody = '<tbody>';
+  for (const r of rows){
+    const rankCls = r.rank===1?'r1':r.rank===2?'r2':r.rank===3?'r3':'';
+    const diffCls = r.DIFF>0?'pos':r.DIFF<0?'neg':'zero';
+    const diffStr = (r.DIFF>0?'+':'') + r.DIFF;
+    const pctStr = r.PCT.toFixed(3).replace(/^0/, '');
+    const pctWidth = Math.round(r.PCT*100);
+    const leagueBadge = showLeague ? ` <span class="lg">${r.league}</span>` : '';
+    tbody += `<tr>
+      <td class="num"><span class="rank ${rankCls}">${r.rank}</span></td>
+      <td><button class="team team-btn" data-team="${encodeURIComponent(r.team)}" data-league="${r.league}"><span class="ball"></span><span>${r.team}</span>${leagueBadge}<span class="team-chev">›</span></button></td>
+      <td class="num">${r.W}</td>
+      <td class="num">${r.L}</td>
+      <td class="num">${r.T}</td>
+      <td class="num">${r.GP}</td>
+      <td class="num"><span class="bar"><span style="width:${pctWidth}%"></span></span><span class="pct-val">${pctStr}</span></td>
+      <td class="num">${r.RF}</td>
+      <td class="num">${r.RA}</td>
+      <td class="num diff ${diffCls}">${diffStr}</td>
+      <td class="num"><span class="rem-pill${r.REM===0?' done':''}">${r.REM}</span></td>
+      <td class="next-cell">${renderNext(r.NEXT)}</td>
+    </tr>`;
+  }
+  tbody += '</tbody>';
+
+  tbl.innerHTML = thead + tbody;
+
+  // wire header sorts
+  tbl.querySelectorAll('th[data-sortable="true"]').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.key;
+      if (state[leagueKey].key === k){
+        state[leagueKey].dir = state[leagueKey].dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        state[leagueKey].key = k;
+        // default direction: numeric columns desc, text asc
+        const col = COLS.find(c=>c.k===k);
+        state[leagueKey].dir = col.num ? 'desc' : 'asc';
+      }
+      renderTable(leagueKey);
+    });
+  });
+}
+
+function renderNext(n){
+  if (!n) return '<span class="next-tbd">Season complete</span>';
+  const badge = n.ha === 'vs'
+    ? '<span class="ha-badge home">HOME vs</span>'
+    : '<span class="ha-badge away">AWAY @</span>';
+  return `
+    <div class="next-line1">${badge}<span class="next-opp">${n.opp}</span></div>
+    <div class="next-line2"><span class="next-date">${n.date}</span> · <span class="next-time">${n.time}</span></div>
+    <div class="next-line3"><span class="next-loc">${n.loc || 'Location TBD'}</span></div>
+  `;
+}
+
+function cmp(a,b,key,dir){
+  // Sort next game column by parsed datetime, not by rendered string
+  if (key === 'NEXT'){
+    const av = a.NEXT_KEY, bv = b.NEXT_KEY;
+    if (av < bv) return dir==='asc'?-1:1;
+    if (av > bv) return dir==='asc'?1:-1;
+    return a.team.localeCompare(b.team);
+  }
+  let av = a[key], bv = b[key];
+  if (typeof av === 'string'){
+    av = av.toLowerCase(); bv = bv.toLowerCase();
+    if (av<bv) return dir==='asc'?-1:1;
+    if (av>bv) return dir==='asc'?1:-1;
+  } else {
+    if (av<bv) return dir==='asc'?-1:1;
+    if (av>bv) return dir==='asc'?1:-1;
+  }
+  // tiebreak by win % desc, then diff desc
+  if (a.PCT !== b.PCT) return b.PCT - a.PCT;
+  if (a.DIFF !== b.DIFF) return b.DIFF - a.DIFF;
+  return a.team.localeCompare(b.team);
+}
+
+// Team detail modal
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+
+function parseDateTime(d, t){
+  const md = /(\d+)\/(\d+)/.exec(d||'');
+  if (!md) return null;
+  const mo = +md[1], da = +md[2];
+  const yr = mo >= 2 ? 2026 : 2027;
+  let h=0, mi=0;
+  const tm = /(\d+):(\d+)\s*(AM|PM)/.exec(t||'');
+  if (tm){ h = (+tm[1]) % 12; if (tm[3]==='PM') h += 12; mi = +tm[2]; }
+  return new Date(yr, mo-1, da, h, mi);
+}
+
+function teamGames(league, team){
+  const all = (GAMES[league] || []).filter(g => g.home === team || g.away === team);
+  all.sort((a,b) => (parseDateTime(a.date,a.time)||0) - (parseDateTime(b.date,b.time)||0));
+  return all;
+}
+
+function openTeamModal(league, team){
+  const standings = DATA[league][team];
+  const games = teamGames(league, team);
+  const played = games.filter(g => /^\d+$/.test(g.hs) && /^\d+$/.test(g.as));
+  const upcoming = games.filter(g => !(/^\d+$/.test(g.hs) && /^\d+$/.test(g.as)));
+  const gp = standings.W + standings.L + standings.T;
+  const pct = gp ? ((standings.W + 0.5*standings.T)/gp).toFixed(3).replace(/^0/, '') : '.000';
+  const diff = standings.RF - standings.RA;
+  const diffStr = (diff>0?'+':'') + diff;
+  const pillClass = league.toLowerCase();
+
+  let html = `
+    <div class="mh">
+      <span class="pill ${pillClass}">${league}</span>
+      <div>
+        <h2 class="mh-title" id="modal-title">${team}</h2>
+        <div class="mh-sub">6U ${league} Division · ${gp} games played · ${upcoming.length} remaining</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="k">Record</div><div class="v">${standings.W}-${standings.L}${standings.T?'-'+standings.T:''}</div></div>
+      <div class="stat"><div class="k">Win %</div><div class="v">${pct}</div></div>
+      <div class="stat"><div class="k">Runs For</div><div class="v">${standings.RF}</div></div>
+      <div class="stat"><div class="k">Runs Against</div><div class="v">${standings.RA}</div></div>
+      <div class="stat"><div class="k">Diff</div><div class="v">${diffStr}</div></div>
+    </div>
+
+    <div class="mh-section">Results <span class="count">${played.length}</span></div>
+    <div class="game-list">
+      ${played.length ? played.map(g => resultRow(g, team)).join('') : '<div class="empty">No games played yet.</div>'}
+    </div>
+
+    <div class="mh-section">Remaining Schedule <span class="count">${upcoming.length}</span></div>
+    <div class="game-list">
+      ${upcoming.length ? upcoming.map(g => upcomingRow(g, team)).join('') : '<div class="empty">Season complete — no games remaining.</div>'}
+    </div>
+  `;
+  modalBody.innerHTML = html;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function resultRow(g, team){
+  const isHome = g.home === team;
+  const opp = isHome ? g.away : g.home;
+  const ha = isHome ? 'vs' : '@';
+  const myScore = +(isHome ? g.hs : g.as);
+  const oppScore = +(isHome ? g.as : g.hs);
+  let outcome, label;
+  if (myScore > oppScore){ outcome='win'; label='W ' + myScore + '–' + oppScore; }
+  else if (myScore < oppScore){ outcome='loss'; label='L ' + myScore + '–' + oppScore; }
+  else { outcome='tie'; label='T ' + myScore + '–' + oppScore; }
+  return `
+    <div class="game-row ${outcome}">
+      <div><div class="gr-date">${g.date}</div><div class="gr-time">${g.time}</div></div>
+      <div>
+        <div class="gr-opp"><span class="ha-inline ${isHome?'home':'away'}">${isHome?'HOME':'AWAY'}</span>${ha} ${opp}</div>
+        <div class="gr-loc">${g.loc || 'Location TBD'}</div>
+      </div>
+      <div class="gr-result ${outcome}">${label}</div>
+    </div>
+  `;
+}
+
+function upcomingRow(g, team){
+  const isHome = g.home === team;
+  const opp = isHome ? g.away : g.home;
+  const ha = isHome ? 'vs' : '@';
+  return `
+    <div class="game-row upcoming">
+      <div><div class="gr-date">${g.date}</div><div class="gr-time">${g.time}</div></div>
+      <div>
+        <div class="gr-opp"><span class="ha-inline ${isHome?'home':'away'}">${isHome?'HOME':'AWAY'}</span>${ha} ${opp}</div>
+        <div class="gr-loc">${g.loc || 'Location TBD'}</div>
+      </div>
+      <div class="gr-result pending">Upcoming</div>
+    </div>
+  `;
+}
+
+function closeModal(){
+  modal.hidden = true;
+  document.body.style.overflow = '';
+}
+modal.addEventListener('click', e => { if (e.target.dataset.close !== undefined) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+// Delegate clicks on team buttons across all tables
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.team-btn');
+  if (!btn) return;
+  const team = decodeURIComponent(btn.dataset.team);
+  const league = btn.dataset.league;
+  openTeamModal(league, team);
+});
+
+// tabs
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const k = btn.dataset.k;
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view===k));
+  });
+});
+
+// initial render
+['Alo','Finch','Chamberlain','Combined'].forEach(renderTable);
+</script>
+</body>
+</html>
