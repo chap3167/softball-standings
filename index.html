@@ -857,7 +857,7 @@ function renderSOSTable(){
     ASPLIT: `${t.AW}-${t.AL}${t.AT?'-'+t.AT:''} (${t.A_RF}/${t.A_RA})`,
   }));
 
-  const state = renderSOSTable.state || (renderSOSTable.state = { key:'SOS', dir:'desc' });
+  const state = renderSOSTable.state || (renderSOSTable.state = { key:'rec', dir:'desc' });
   const col = cols.find(c => c.k === state.key) || cols[0];
   const sortKey = col.sortKey || state.key;
   rows.sort((a,b) => {
