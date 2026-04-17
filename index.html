@@ -825,28 +825,44 @@ function pctStr(x){ return (x==null) ? '—' : (Math.round(x*1000)/1000).toFixed
 function renderSOSTable(){
   const tbl = document.getElementById('tbl-Analytics-SOS');
   const cols = [
-    { k:'team', label:'Team', num:false, sortable:true },
-    { k:'rec',  label:'Record', num:false, sortable:false },
-    { k:'STREAK', label:'Streak', num:false, sortable:false },
-    { k:'SOS',   label:'SOS',   num:true, sortable:true },
-    { k:'SOS_R', label:'SOS-R', num:true, sortable:true },
-    { k:'PYTH',  label:'Pythag', num:true, sortable:true },
-    { k:'PDELTA', label:'Pythag Δ', num:true, sortable:true },
-    { k:'HSPLIT', label:'Home', num:false, sortable:false },
-    { k:'ASPLIT', label:'Away', num:false, sortable:false },
+    { k:'team', label:'Team', num:false, sortable:true, sortKey:'team' },
+    { k:'rec',  label:'Record', num:false, sortable:true, sortKey:'rec_sort' },
+    { k:'STREAK', label:'Streak', num:false, sortable:true, sortKey:'streak_sort' },
+    { k:'SOS',   label:'SOS',   num:true, sortable:true, sortKey:'SOS' },
+    { k:'SOS_R', label:'SOS-R', num:true, sortable:true, sortKey:'SOS_R' },
+    { k:'PYTH',  label:'Pythag', num:true, sortable:true, sortKey:'PYTH' },
+    { k:'PDELTA', label:'Pythag Δ', num:true, sortable:true, sortKey:'PDELTA' },
+    { k:'HSPLIT', label:'Home', num:false, sortable:true, sortKey:'home_sort' },
+    { k:'ASPLIT', label:'Away', num:false, sortable:true, sortKey:'away_sort' },
   ];
+  const streakScore = s => {
+    if (!s) return -9999;
+    const n = parseInt(s.slice(1), 10) || 0;
+    if (s[0]==='W') return 1000 + n;
+    if (s[0]==='T') return 500;
+    if (s[0]==='L') return -n;
+    return 0;
+  };
+  const homeGP = t => t.HW+t.HL+t.HT;
+  const awayGP = t => t.AW+t.AL+t.AT;
   const rows = Object.values(ANALYTICS.teams).map(t => ({
     ...t,
     rec: `${t.W}-${t.L}${t.T?'-'+t.T:''}`,
+    rec_sort: (t.W + 0.5*t.T) * 100 + t.PCT,
+    streak_sort: streakScore(t.STREAK),
+    home_sort: homeGP(t) ? (t.HW + 0.5*t.HT)/homeGP(t) : -1,
+    away_sort: awayGP(t) ? (t.AW + 0.5*t.AT)/awayGP(t) : -1,
     PDELTA: t.PYTH - t.PCT,
     HSPLIT: `${t.HW}-${t.HL}${t.HT?'-'+t.HT:''} (${t.H_RF}/${t.H_RA})`,
     ASPLIT: `${t.AW}-${t.AL}${t.AT?'-'+t.AT:''} (${t.A_RF}/${t.A_RA})`,
   }));
 
   const state = renderSOSTable.state || (renderSOSTable.state = { key:'SOS', dir:'desc' });
+  const col = cols.find(c => c.k === state.key) || cols[0];
+  const sortKey = col.sortKey || state.key;
   rows.sort((a,b) => {
-    let av = a[state.key], bv = b[state.key];
-    if (state.key === 'team') return a.team.localeCompare(b.team) * (state.dir==='asc'?1:-1);
+    if (sortKey === 'team') return a.team.localeCompare(b.team) * (state.dir==='asc'?1:-1);
+    let av = a[sortKey], bv = b[sortKey];
     if (av == null) av = -Infinity; if (bv == null) bv = -Infinity;
     return (av < bv ? -1 : av > bv ? 1 : 0) * (state.dir==='asc'?1:-1);
   });
