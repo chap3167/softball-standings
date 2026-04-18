@@ -88,6 +88,22 @@ def parse_schedule(html):
             "loc": r.get("ScheduleLabel", ""),
         }
         games.append(g)
+
+    # Byes on sbmsa.net come with no date, grouped at the end of each week's
+    # section. Assign each bye the date of the next dated game in source order;
+    # trailing byes inherit the most recently seen date.
+    next_dated = [None] * len(games)
+    last_known = None
+    for i in range(len(games) - 1, -1, -1):
+        if games[i]["date"]:
+            last_known = games[i]["date"]
+        next_dated[i] = last_known
+    prev_dated = None
+    for i, g in enumerate(games):
+        if g["date"]:
+            prev_dated = g["date"]
+        elif g["time"] == "Bye":
+            g["date"] = next_dated[i] or prev_dated or ""
     return games
 
 
