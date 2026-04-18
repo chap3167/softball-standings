@@ -952,7 +952,7 @@ function renderTable(leagueKey){
   const tbl = document.getElementById('tbl-' + leagueKey);
   const showLeague = leagueKey === 'Combined';
   const rows = buildRows(leagueKey);
-  const s = state[leagueKey] || (state[leagueKey] = { key:'PCT', dir:'desc' });
+  const s = state[leagueKey] || (state[leagueKey] = { key: leagueKey === 'Combined' ? 'W' : 'PCT', dir:'desc' });
   rows.sort((a,b) => cmp(a,b,s.key,s.dir));
   // rank (by current sort order) — always numeric rank by position
   rows.forEach((r,i)=> r.rank = i+1);
