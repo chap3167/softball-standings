@@ -385,6 +385,62 @@
   }
   .article b{color:var(--ink); font-weight:800}
 
+  .recap-card{
+    position:relative; overflow:hidden;
+    max-width:860px; margin:0 auto 28px;
+    background:linear-gradient(135deg,#fff2e8 0%, #ffe4f3 55%, #efe4ff 100%);
+    border:1px solid #f5deee; border-radius:28px;
+    padding:24px 28px 22px;
+    box-shadow:var(--shadow);
+  }
+  .recap-card::before{
+    content:""; position:absolute; right:-60px; top:-60px;
+    width:240px; height:240px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #ffd1e0 0%, rgba(255,209,224,0) 70%);
+    pointer-events:none;
+  }
+  .recap-kicker{display:flex; align-items:center; gap:10px; position:relative; z-index:1}
+  .recap-badge{
+    background:var(--pink-deep); color:#fff;
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:.18em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px;
+  }
+  .recap-meta{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); font-weight:700}
+  .recap-headline{
+    font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:32px; line-height:1.1; margin:10px 0 12px;
+    color:var(--ink); position:relative; z-index:1;
+  }
+  .recap-score{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    background:rgba(255,255,255,0.6); border:1px solid #f5deee;
+    padding:10px 16px; border-radius:16px; margin-bottom:14px;
+    position:relative; z-index:1;
+  }
+  .rs-team{font-family:'Fredoka',sans-serif; font-weight:700; font-size:18px; color:var(--ink)}
+  .rs-num{font-family:'Fredoka',sans-serif; font-weight:800; font-size:26px; color:var(--pink-deep)}
+  .rs-dash{font-family:'Fredoka',sans-serif; font-weight:700; font-size:22px; color:var(--ink-soft)}
+  .rs-loc{margin-left:auto; font-size:12px; color:var(--ink-soft); letter-spacing:.1em; text-transform:uppercase; font-weight:700}
+  .recap-body{font-family:'Baloo 2',sans-serif; font-size:15.5px; line-height:1.6; color:var(--ink); position:relative; z-index:1}
+  .recap-body p{margin:0 0 12px}
+  .recap-body b{font-weight:800}
+  .recap-takeaways{
+    background:rgba(255,255,255,0.55); border:1px solid #f5deee;
+    border-radius:14px; padding:12px 16px; margin:4px 0 14px;
+  }
+  .rt-title{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .recap-takeaways ul{margin:0; padding-left:18px}
+  .recap-takeaways li{margin:2px 0}
+  .recap-kicker-closer{
+    font-style:italic; color:var(--ink-soft);
+    border-top:1px dashed #e8c5de; padding-top:10px; margin-top:6px;
+  }
+
   .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 16px}
   .stat{
     flex:1 1 110px; min-width:110px; padding:10px 14px;
@@ -498,6 +554,38 @@
   <button class="tab" data-k="Combined"><span class="dot"></span>All Leagues Combined</button>
   <button class="tab" data-k="Analytics"><span class="dot analytics"></span>Analytics</button>
 </nav>
+
+<section class="recap-card" id="recap-card">
+  <div class="recap-kicker">
+    <span class="recap-badge">Recap</span>
+    <span class="recap-meta">Sat 4/18 · 6U Alo · Division Showdown</span>
+  </div>
+  <h2 class="recap-headline">The Aggies Find a Way. Again.</h2>
+  <div class="recap-score">
+    <span class="rs-team">Aggies</span>
+    <span class="rs-num">14</span>
+    <span class="rs-dash">–</span>
+    <span class="rs-num">13</span>
+    <span class="rs-team">Comets</span>
+    <span class="rs-loc">SWMS Field 4</span>
+  </div>
+  <div class="recap-body">
+    <p>Walked into Field 4 this morning with first place on the line and walked off it with a new kind of inevitability.</p>
+    <p>The numbers said the <b>Comets</b> were the better team. More runs scored, fewer runs allowed, a Pythagorean win percentage (.784) that outpaced their record. The Aggies' Pythag said they should've been closer to 5-2. They walked in 7-0 anyway.</p>
+    <p>Now they're <b>8-0</b>. The best win on the Aggies' ledger is no longer the 11-9 against Crush three weeks ago — it's today's 14-13 against the team that, by almost every advanced measure, was the strongest team they'd seen all spring.</p>
+    <div class="recap-takeaways">
+      <div class="rt-title">What it means for Alo</div>
+      <ul>
+        <li><b>Aggies (8-0)</b> clinch sole possession of first place with two games to play.</li>
+        <li><b>Bombers (5-1)</b> move into second place alone — .833 PCT now sits clearly behind the undefeated Aggies.</li>
+        <li><b>Comets (6-2)</b> slide to third. Still in it mathematically, out of it realistically.</li>
+      </ul>
+    </div>
+    <p>Aggies travel to <b>Force</b> Monday (6:00 PM, SWMS Field 2), then close at home vs <b>Bombers</b>. Win both and finish 10-0 outright. Drop either and the final standings come down to tiebreakers.</p>
+    <p>Comets get Starz on Thursday.</p>
+    <p class="recap-kicker-closer">Under a mile between the two campuses. One run between first and third place tonight.</p>
+  </div>
+</section>
 
 <main>
   <section class="view active" data-view="Alo">
