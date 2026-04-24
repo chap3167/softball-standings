@@ -654,6 +654,81 @@
   .bracket-tree.bronze .br-round h6{background:linear-gradient(90deg,#f6e4d0,#d4a373); color:#5e3412}
   .bracket-tree.copper .br-round h6{background:linear-gradient(90deg,#e8c3a4,#c08457); color:#fff}
 
+  /* Gold double-elimination: absolute-positioned WB + LB + Grand Final */
+  /* When the Gold host contains a de-abs-wrap, drop the flex/gap from .bracket-tree */
+  .bracket-tree:has(.de-abs-wrap){ display:block; padding:8px 0 18px; gap:0; overflow:visible; }
+  .de-abs-wrap{ overflow-x:auto; padding:0 4px 18px; }
+  .de-abs{
+    position:relative; width:1240px; height:780px;
+    padding:8px 0 18px;
+    background:
+      linear-gradient(180deg,
+        rgba(255,243,184,0.35) 0%,
+        rgba(255,243,184,0.35) 470px,
+        transparent 470px,
+        transparent 486px,
+        rgba(255,232,232,0.32) 486px,
+        rgba(255,232,232,0.32) 100%);
+    border-radius:14px;
+  }
+  .de-abs .bsection-label{
+    position:absolute;
+    font-family:'Fredoka',sans-serif; font-weight:800;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    padding:4px 10px; border-radius:6px; z-index:3;
+  }
+  .de-abs .bsection-label.wb{ top:8px; left:10px; background:linear-gradient(90deg,#fff3b8,#ffe48a); color:#8a6f0a }
+  .de-abs .bsection-label.lb{ top:490px; left:10px; background:#b01e33; color:#fff }
+  .de-abs .bcol-header{
+    position:absolute; top:32px; width:160px;
+    font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    padding:5px 6px; background:var(--ink); color:#fff;
+    border-radius:6px; text-align:center; z-index:2;
+    box-shadow:0 2px 0 rgba(0,0,0,.1);
+  }
+  .de-abs .bcol-header.lbh{ top:514px; background:#b01e33 }
+  .de-abs .bcol-header.gfh{
+    background:linear-gradient(90deg,#b8860b,#f7b801,#fff1b0); color:#3a2b00;
+  }
+  .de-abs .abs-matchup{
+    position:absolute; width:160px;
+    background:#fff; border:1px solid #ece0f0; border-radius:12px;
+    box-shadow:0 3px 10px rgba(120,70,160,0.07);
+    overflow:visible !important;
+  }
+  .de-abs .abs-matchup.gf-style{
+    border:2px solid #b8860b;
+    background:linear-gradient(180deg,#fff8e0 0%,#fff 100%);
+    box-shadow:0 6px 16px rgba(184,134,11,.22);
+  }
+  .de-abs .abs-matchup.ifn-style{
+    border:2px dashed #b01e33;
+    background:repeating-linear-gradient(135deg,#fffafa 0,#fffafa 8px,#fff 8px,#fff 16px);
+  }
+  .de-abs .abs-gid{
+    position:absolute; top:-9px; left:10px;
+    background:var(--ink); color:#ffd84d;
+    font-family:'Fredoka',sans-serif; font-weight:800;
+    font-size:10px; padding:1px 8px; border-radius:5px;
+    letter-spacing:.04em; z-index:5;
+    box-shadow:0 2px 0 rgba(0,0,0,.15);
+  }
+  .de-abs .gf-style .abs-gid{ background:#b8860b; color:#fff }
+  .de-abs .ifn-style .abs-gid{ background:#b01e33; color:#fff }
+  .de-abs .abs-matchup .br-slot{ font-size:12px; padding:6px 10px; }
+  .de-abs .abs-matchup .br-slot .sd{ font-size:10px }
+  .de-abs .abs-matchup .vs{ font-size:9px; padding:1px 0 }
+  .br-slot.lbl{ background:#fff0f0 }
+  .br-slot.lbl .sd{ background:#b01e33; color:#fff }
+  .br-slot.lbl .tm{ color:#7a0e1e; font-weight:700; font-style:normal; cursor:default }
+  .de-note{
+    background:#fff; border:1px solid #ece0f0; border-radius:10px;
+    padding:10px 12px; margin-top:10px; font-size:12px; line-height:1.5;
+    color:var(--ink-soft);
+  }
+  .de-note b{ color:var(--ink) }
+
   .bracket-head{
     display:flex; align-items:baseline; justify-content:space-between;
     gap:12px; flex-wrap:wrap; margin:6px 0 0;
@@ -1014,7 +1089,7 @@
     <div class="card">
       <div class="bracket-head">
         <h3 class="bh-title"><span class="bracket-tier-ribbon gold">Gold</span>12-Team Bracket</h3>
-        <span class="bh-sub">Top 4 seeds in each division · 4 byes to Quarterfinals</span>
+        <span class="bh-sub">Top 4 seeds in each division · Double-elimination · Top 4 seeds bye Round 1</span>
       </div>
       <div class="bracket-tree" id="tree-Gold"></div>
     </div>
@@ -1044,7 +1119,7 @@
     </div>
 
     <div class="po-note" style="margin-top:14px">
-      <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper). Byes shown here: Gold gives the top 2 pooled seeds a bye (seed 1 straight to the semifinal, seed 2 to the quarterfinal); Silver and Bronze each have one play-in game (seeds 8 vs 9); Copper's top seed byes to the semifinal. Round-by-round matchup pairings follow standard single-elimination templates; the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
+      <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper). <b>Gold is double-elimination</b> — top 4 seeds bye to Round 2; lose once, you drop to the Loser's Bracket; lose twice, you're out. Silver and Bronze are single-elimination with one play-in game (seeds 8 vs 9); Copper's top seed byes to the semifinal. Round-by-round pairings follow standard seeding templates; the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
     </div>
   </section>
 
@@ -1915,27 +1990,57 @@ function seedDivision(divKey){
   return teams;
 }
 
-// 12-team bracket — exactly 2 byes. Seed 1 double-byes to the semifinal;
-// seed 2 byes to the quarterfinal. Seeds 3–12 all play Round 1.
+// 12-team double-elimination: Winner's Bracket.
+// Top 4 seeds bye to R2; seeds 5-12 play R1.
 const BRACKET_12 = [
   { name:'Round 1', games:[
-    {id:'G12-R1a', a:{seed:9},  b:{seed:12}},   // seed 1's half
-    {id:'G12-R1b', a:{seed:10}, b:{seed:11}},   // seed 1's half
-    {id:'G12-R1c', a:{seed:3},  b:{seed:8}},    // seed 2's half
-    {id:'G12-R1d', a:{seed:4},  b:{seed:7}},    // seed 2's half
-    {id:'G12-R1e', a:{seed:5},  b:{seed:6}}     // seed 2's half
+    { id:'G12-1', a:{seed:5}, b:{seed:12} },  // feeds G12-6 (4 vs W)
+    { id:'G12-2', a:{seed:6}, b:{seed:11} },  // feeds G12-8 (3 vs W)
+    { id:'G12-3', a:{seed:7}, b:{seed:10} },  // feeds G12-7 (2 vs W)
+    { id:'G12-4', a:{seed:8}, b:{seed:9}  }   // feeds G12-5 (1 vs W)
   ]},
-  { name:'Quarterfinals', games:[
-    {id:'G12-QFa', a:{from:'G12-R1a'}, b:{from:'G12-R1b'}},   // top — winner plays seed 1
-    {id:'G12-QFb', a:{from:'G12-R1c'}, b:{from:'G12-R1d'}},   // middle
-    {id:'G12-QFc', a:{seed:2},         b:{from:'G12-R1e'}}    // bottom — seed 2 enters
+  { name:'Round 2', games:[
+    { id:'G12-5', a:{seed:1}, b:{from:'G12-4'} },
+    { id:'G12-6', a:{seed:4}, b:{from:'G12-1'} },
+    { id:'G12-7', a:{seed:2}, b:{from:'G12-3'} },
+    { id:'G12-8', a:{seed:3}, b:{from:'G12-2'} }
   ]},
   { name:'Semifinals', games:[
-    {id:'G12-SF1', a:{seed:1},         b:{from:'G12-QFa'}},   // seed 1 enters
-    {id:'G12-SF2', a:{from:'G12-QFb'}, b:{from:'G12-QFc'}}
+    { id:'G12-9',  a:{from:'G12-5'}, b:{from:'G12-6'} },
+    { id:'G12-10', a:{from:'G12-7'}, b:{from:'G12-8'} }
+  ]},
+  { name:'WB Final', games:[
+    { id:'G12-11', a:{from:'G12-9'}, b:{from:'G12-10'} }
+  ]}
+];
+
+// 12-team double-elimination: Loser's Bracket.
+// 4 WB R1 losers + 4 WB R2 losers + 2 WB SF losers feed in over time.
+const LOSERS_12 = [
+  { name:'LB R1', games:[
+    { id:'L12-1', a:{label:'Loser G12-1'}, b:{label:'Loser G12-4'} },
+    { id:'L12-2', a:{label:'Loser G12-2'}, b:{label:'Loser G12-3'} }
+  ]},
+  { name:'LB R2', games:[
+    { id:'L12-3', a:{from:'L12-1'}, b:{label:'Loser G12-7'} },
+    { id:'L12-4', a:{from:'L12-2'}, b:{label:'Loser G12-5'} }
+  ]},
+  { name:'LB R3', games:[
+    { id:'L12-5', a:{from:'L12-3'}, b:{label:'Loser G12-6'} },
+    { id:'L12-6', a:{from:'L12-4'}, b:{label:'Loser G12-8'} }
+  ]},
+  { name:'LB R4', games:[
+    { id:'L12-7', a:{from:'L12-5'}, b:{label:'Loser G12-10'} },
+    { id:'L12-8', a:{from:'L12-6'}, b:{label:'Loser G12-9'}  }
+  ]},
+  { name:'LB Final', games:[
+    { id:'L12-9', a:{from:'L12-7'}, b:{from:'L12-8'} }
   ]},
   { name:'Championship', games:[
-    {id:'G12-F',   a:{from:'G12-SF1'}, b:{from:'G12-SF2'}}
+    { id:'G12-F',  a:{from:'G12-11'}, b:{from:'L12-9'} }
+  ]},
+  { name:'If Necessary', games:[
+    { id:'G12-IF', a:{from:'G12-11'}, b:{from:'L12-9'} }
   ]}
 ];
 
@@ -2010,11 +2115,7 @@ function buildTierFields(seededByDiv){
 function renderBracketTree(containerId, tierKey, teams){
   const host = document.getElementById(containerId);
   if (!host) return;
-  const structure = pickBracket(teams.length);
-  if (!structure){
-    host.innerHTML = `<div class="hint" style="padding:12px">Bracket template unavailable for ${teams.length} teams.</div>`;
-    return;
-  }
+
   const bySeed = {};
   teams.forEach(t => { bySeed[t.tierSeed] = t; });
 
@@ -2035,7 +2136,125 @@ function renderBracketTree(containerId, tierKey, teams){
     <span class="tm">Winner ${fromId}</span>
     <span class="rec"></span>
   </div>`;
-  const slotHTML = (slot) => slot.seed !== undefined ? seededSlot(slot.seed) : fromSlot(slot.from);
+  const labelSlot = (text) => `<div class="br-slot tbd lbl">
+    <span class="sd">↳</span>
+    <span class="tm">${text}</span>
+    <span class="rec"></span>
+  </div>`;
+  const slotHTML = (slot) => slot.seed !== undefined ? seededSlot(slot.seed)
+    : slot.label !== undefined ? labelSlot(slot.label)
+    : fromSlot(slot.from);
+
+  // --- Gold: absolute-positioned double-elimination layout ---
+  if (tierKey === 'Gold' && teams.length === 12) {
+    const GAME_W = 160, GAME_H = 68, COL_W = 200;
+    const colLeft = (c) => (c - 1) * COL_W + 14;
+
+    // Column placement — WB cols 1-4, LB cols 1-5, Championship col 6
+    const COLS = {
+      'G12-1':1, 'G12-2':1, 'G12-3':1, 'G12-4':1,
+      'G12-5':2, 'G12-6':2, 'G12-7':2, 'G12-8':2,
+      'G12-9':3, 'G12-10':3,
+      'G12-11':4,
+      'L12-1':1, 'L12-2':1,
+      'L12-3':2, 'L12-4':2,
+      'L12-5':3, 'L12-6':3,
+      'L12-7':4, 'L12-8':4,
+      'L12-9':5,
+      'G12-F':6, 'G12-IF':6
+    };
+
+    const POS = {};
+    const cen = (id) => POS[id].top + GAME_H / 2;
+    const mid = (a, b) => (cen(a) + cen(b)) / 2 - GAME_H / 2;
+
+    // WB R1 vertical order matches the feeder of each R2 seed-entry game:
+    //   G12-4 (8v9) feeds G12-5 (seed 1) — top
+    //   G12-1 (5v12) feeds G12-6 (seed 4)
+    //   G12-3 (7v10) feeds G12-7 (seed 2)
+    //   G12-2 (6v11) feeds G12-8 (seed 3) — bottom
+    const WB_R1_TOP = 80, SLOT_V = 100;
+    ['G12-4','G12-1','G12-3','G12-2'].forEach((id, i) => {
+      POS[id] = { top: WB_R1_TOP + i * SLOT_V };
+    });
+    POS['G12-5'] = { top: POS['G12-4'].top };
+    POS['G12-6'] = { top: POS['G12-1'].top };
+    POS['G12-7'] = { top: POS['G12-3'].top };
+    POS['G12-8'] = { top: POS['G12-2'].top };
+    POS['G12-9']  = { top: mid('G12-5','G12-6') };
+    POS['G12-10'] = { top: mid('G12-7','G12-8') };
+    POS['G12-11'] = { top: mid('G12-9','G12-10') };
+
+    const LB_R1_TOP = 560, LB_SLOT_V = 120;
+    POS['L12-1'] = { top: LB_R1_TOP };
+    POS['L12-2'] = { top: LB_R1_TOP + LB_SLOT_V };
+    POS['L12-3'] = { top: POS['L12-1'].top };
+    POS['L12-4'] = { top: POS['L12-2'].top };
+    POS['L12-5'] = { top: POS['L12-3'].top };
+    POS['L12-6'] = { top: POS['L12-4'].top };
+    POS['L12-7'] = { top: POS['L12-5'].top };
+    POS['L12-8'] = { top: POS['L12-6'].top };
+    POS['L12-9'] = { top: mid('L12-7','L12-8') };
+    POS['G12-F']  = { top: (POS['G12-11'].top + POS['L12-9'].top) / 2 };
+    POS['G12-IF'] = { top: POS['G12-F'].top + 100 };
+
+    const allGames = [];
+    [...BRACKET_12, ...LOSERS_12].forEach(round => round.games.forEach(g => allGames.push(g)));
+
+    const absMatchupHTML = (g) => {
+      const col = COLS[g.id];
+      const top = POS[g.id].top;
+      const left = colLeft(col);
+      const extraCls = g.id === 'G12-F' ? ' gf-style' : g.id === 'G12-IF' ? ' ifn-style' : '';
+      return `
+        <div class="abs-matchup${extraCls}" data-gid="${g.id}" style="left:${left}px; top:${top}px; width:${GAME_W}px;">
+          <span class="abs-gid">${g.id.replace('G12-','G').replace('L12-','L')}</span>
+          ${slotHTML(g.a)}
+          <div class="vs">VS</div>
+          ${slotHTML(g.b)}
+        </div>
+      `;
+    };
+
+    const wbHeaders = [
+      { col:1, label:'Round 1' },
+      { col:2, label:'Round 2' },
+      { col:3, label:'Semifinals' },
+      { col:4, label:'WB Final' }
+    ];
+    const lbHeaders = [
+      { col:1, label:'LB R1' },
+      { col:2, label:'LB R2' },
+      { col:3, label:'LB R3' },
+      { col:4, label:'LB R4' },
+      { col:5, label:'LB Final' }
+    ];
+
+    const headerHTML = [
+      ...wbHeaders.map(h => `<div class="bcol-header" style="left:${colLeft(h.col)}px;">${h.label}</div>`),
+      ...lbHeaders.map(h => `<div class="bcol-header lbh" style="left:${colLeft(h.col)}px;">${h.label}</div>`),
+      `<div class="bcol-header gfh" style="left:${colLeft(6)}px; top:32px;">Championship</div>`
+    ].join('');
+
+    host.innerHTML = `
+      <div class="de-abs-wrap">
+        <div class="de-abs">
+          <div class="bsection-label wb">Winner's Bracket</div>
+          <div class="bsection-label lb">Loser's Bracket</div>
+          ${headerHTML}
+          ${allGames.map(absMatchupHTML).join('')}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // --- Other tiers: simple column tree ---
+  const structure = pickBracket(teams.length);
+  if (!structure){
+    host.innerHTML = `<div class="hint" style="padding:12px">Bracket template unavailable for ${teams.length} teams.</div>`;
+    return;
+  }
 
   host.innerHTML = structure.map((round, idx) => {
     const isPlayIn = idx === 0 && round.games.length === 1;
