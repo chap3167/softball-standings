@@ -246,6 +246,25 @@
   .streak-pill.l{background:#fbd9e4; color:#a62157}
   .streak-pill.t{background:#e6d7ff; color:#5a3f9c}
 
+  /* Monte Carlo bars */
+  .mc-bar{
+    display:inline-flex; height:14px; width:160px; border-radius:4px; overflow:hidden;
+    vertical-align:middle; background:#ecd9a6; margin-left:0;
+  }
+  .mc-bar .seg{height:100%}
+  .mc-bar .seg.g{background:#f7b801}
+  .mc-bar .seg.s{background:#a7b0bc}
+  .mc-bar .seg.b{background:#cd7f32}
+  .mc-bar .seg.c{background:#b16a4a}
+  .mc-val{font-family:'Chivo Mono','JetBrains Mono',monospace; font-weight:700; font-variant-numeric:tabular-nums}
+  .mc-val.g{color:#a8860a}
+  .mc-val.s{color:#5e6875}
+  .mc-val.b{color:#8a4a1a}
+  .mc-val.c{color:#6b2d15}
+  @media (max-width:700px){
+    .mc-bar{width:110px}
+  }
+
   /* Highlights grid */
   .hl-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; padding:4px 6px 8px}
   .hl-head{
@@ -1280,6 +1299,17 @@
 
     <div class="card">
       <div class="card-head">
+        <h2 class="card-title"><span class="pill playoffs">Monte Carlo</span>Bracket Odds — 3,000 Simulated Seasons</h2>
+        <span class="hint">Every remaining game decided by each team's Pythag rating, 3,000 times. Bracket tier odds are the share of sims your team lands there.</span>
+      </div>
+      <div class="note">
+        Each remaining game resolves using <b>log5</b> on the two teams' <b>Pythag</b> ratings (stronger team wins more often, upsets still happen). Final seeding uses <b>win % → run differential → alphabetical</b>, same as the Playoffs tab. Gold = seeds 1–4, Silver = 5–7, Bronze = 8–10, Copper = 11+.
+      </div>
+      <div id="mc-wrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
         <h2 class="card-title"><span class="pill combined">Highlights</span>Season Highlights</h2>
         <span class="hint">Most memorable games across all leagues</span>
       </div>
@@ -1835,6 +1865,173 @@ function renderPowerTable(){
   });
 }
 
+// Monte Carlo bracket odds — 3,000 simulated seasons
+function mcLog5(pA, pB){
+  const a = Math.max(0.01, Math.min(0.99, pA));
+  const b = Math.max(0.01, Math.min(0.99, pB));
+  const num = a - a*b;
+  const den = a + b - 2*a*b;
+  return den > 0 ? num/den : 0.5;
+}
+
+let _mcCache = null;
+function runMonteCarlo(trials){
+  trials = trials || 3000;
+  const base = {};
+  for (const [div, teams] of Object.entries(DATA)){
+    for (const [team, r] of Object.entries(teams)){
+      const key = div + '|' + team;
+      const a = ANALYTICS.teams[key];
+      base[key] = {
+        div, team,
+        W:r.W, L:r.L, T:r.T, RF:r.RF, RA:r.RA,
+        pyt: a ? a.PYTH : 0.5
+      };
+    }
+  }
+  const upcoming = [];
+  for (const [div, games] of Object.entries(GAMES)){
+    games.forEach(g => {
+      if (g.time === 'Bye') return;
+      if (/^\d+$/.test(g.hs) && /^\d+$/.test(g.as)) return;
+      if (!g.home || !g.away) return;
+      upcoming.push({ div, home:g.home, away:g.away });
+    });
+  }
+  const counts = {};
+  for (const key of Object.keys(base)) counts[key] = { gold:0, silver:0, bronze:0, copper:0, top1:0 };
+
+  const divTeams = {};
+  for (const div of Object.keys(DATA)) divTeams[div] = Object.keys(DATA[div]);
+
+  for (let k = 0; k < trials; k++){
+    const sim = {};
+    for (const [key, v] of Object.entries(base)) sim[key] = { W:v.W, L:v.L, T:v.T };
+    for (const g of upcoming){
+      const kh = g.div + '|' + g.home, ka = g.div + '|' + g.away;
+      if (!sim[kh] || !sim[ka]) continue;
+      const pH = mcLog5(base[kh].pyt, base[ka].pyt);
+      if (Math.random() < pH){ sim[kh].W++; sim[ka].L++; }
+      else { sim[ka].W++; sim[kh].L++; }
+    }
+    for (const div of Object.keys(divTeams)){
+      const rows = divTeams[div].map(t => {
+        const key = div + '|' + t;
+        const s = sim[key];
+        const gp = s.W + s.L + s.T;
+        return {
+          key, t,
+          pct: gp ? (s.W + 0.5*s.T) / gp : 0,
+          diff: base[key].RF - base[key].RA
+        };
+      });
+      rows.sort((a,b) => (b.pct - a.pct) || (b.diff - a.diff) || a.t.localeCompare(b.t));
+      rows.forEach((r, i) => {
+        const seed = i + 1;
+        const c = counts[r.key];
+        if (seed === 1) c.top1++;
+        if (seed <= 4) c.gold++;
+        else if (seed <= 7) c.silver++;
+        else if (seed <= 10) c.bronze++;
+        else c.copper++;
+      });
+    }
+  }
+  const out = [];
+  for (const [key, c] of Object.entries(counts)){
+    out.push({
+      team: base[key].team, div: base[key].div,
+      W: base[key].W, L: base[key].L, T: base[key].T,
+      gold: c.gold/trials, silver: c.silver/trials,
+      bronze: c.bronze/trials, copper: c.copper/trials,
+      top1: c.top1/trials
+    });
+  }
+  return out;
+}
+
+function renderMonteCarloTable(){
+  const wrap = document.getElementById('mc-wrap');
+  if (!wrap) return;
+  if (!_mcCache) _mcCache = runMonteCarlo(3000);
+  const state = renderMonteCarloTable.state || (renderMonteCarloTable.state = { key:'gold', dir:'desc' });
+  const rows = _mcCache.slice().sort((a,b) => {
+    if (state.key === 'team') return a.team.localeCompare(b.team) * (state.dir==='asc'?1:-1);
+    if (state.key === 'div')  return a.div.localeCompare(b.div)   * (state.dir==='asc'?1:-1);
+    if (state.key === 'rec'){
+      const av = (a.W + 0.5*a.T) / Math.max(1, a.W+a.L+a.T);
+      const bv = (b.W + 0.5*b.T) / Math.max(1, b.W+b.L+b.T);
+      return (av<bv?-1:av>bv?1:0) * (state.dir==='asc'?1:-1);
+    }
+    const av = a[state.key] ?? 0, bv = b[state.key] ?? 0;
+    if (av === bv) return (b.gold - a.gold) || a.team.localeCompare(b.team);
+    return (av<bv?-1:av>bv?1:0) * (state.dir==='asc'?1:-1);
+  });
+  rows.forEach((r,i)=> r.rank = i+1);
+
+  const cols = [
+    { k:'rank',   label:'#',           sortable:false, num:true  },
+    { k:'team',   label:'Team',        sortable:true,  num:false },
+    { k:'div',    label:'Div',         sortable:true,  num:false },
+    { k:'rec',    label:'Record',      sortable:true,  num:true  },
+    { k:'top1',   label:'% #1 Seed',   sortable:true,  num:true  },
+    { k:'gold',   label:'% Gold',      sortable:true,  num:true  },
+    { k:'silver', label:'% Silver',    sortable:true,  num:true  },
+    { k:'bronze', label:'% Bronze',    sortable:true,  num:true  },
+    { k:'copper', label:'% Copper',    sortable:true,  num:true  },
+    { k:'bar',    label:'Distribution', sortable:false, num:false },
+  ];
+  let thead = '<thead><tr>';
+  for (const c of cols){
+    const cls = [c.num?'num':'', state.key===c.k ? (state.dir==='asc'?'sort-asc':'sort-desc') : ''].filter(Boolean).join(' ');
+    const arrow = c.sortable ? `<span class="arrow">${state.key===c.k?(state.dir==='asc'?'▲':'▼'):'↕'}</span>` : '';
+    thead += `<th class="${cls}" data-key="${c.k}" data-sortable="${c.sortable}">${c.label}${arrow}</th>`;
+  }
+  thead += '</tr></thead>';
+
+  const fmtPct = x => {
+    if (x >= 0.9995) return '100';
+    if (x <= 0.0005) return '0';
+    return (x*100).toFixed(1);
+  };
+  const segW = x => Math.max(0, Math.round(x*100));
+
+  let tbody = '<tbody>';
+  for (const r of rows){
+    const rankCls = r.rank===1?'r1':r.rank===2?'r2':r.rank===3?'r3':'';
+    const rec = `${r.W}-${r.L}${r.T?'-'+r.T:''}`;
+    tbody += `<tr>
+      <td class="num"><span class="rank ${rankCls}">${r.rank}</span></td>
+      <td><button class="team team-btn" data-team="${encodeURIComponent(r.team)}" data-league="${r.div}"><span class="ball"></span><span>${r.team}</span><span class="team-chev">›</span></button></td>
+      <td><span class="lg">${r.div}</span></td>
+      <td class="num">${rec}</td>
+      <td class="num">${fmtPct(r.top1)}%</td>
+      <td class="num"><span class="mc-val g">${fmtPct(r.gold)}%</span></td>
+      <td class="num"><span class="mc-val s">${fmtPct(r.silver)}%</span></td>
+      <td class="num"><span class="mc-val b">${fmtPct(r.bronze)}%</span></td>
+      <td class="num"><span class="mc-val c">${fmtPct(r.copper)}%</span></td>
+      <td><span class="mc-bar">
+        <span class="seg g" style="width:${segW(r.gold)}%"></span>
+        <span class="seg s" style="width:${segW(r.silver)}%"></span>
+        <span class="seg b" style="width:${segW(r.bronze)}%"></span>
+        <span class="seg c" style="width:${segW(r.copper)}%"></span>
+      </span></td>
+    </tr>`;
+  }
+  tbody += '</tbody>';
+
+  wrap.innerHTML = `<div class="tbl-wrap"><table id="tbl-Analytics-MC">${thead}${tbody}</table></div>`;
+  const tbl = document.getElementById('tbl-Analytics-MC');
+  tbl.querySelectorAll('th[data-sortable="true"]').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.key;
+      if (state.key === k){ state.dir = state.dir==='asc' ? 'desc' : 'asc'; }
+      else { state.key = k; state.dir = (k==='team' || k==='div') ? 'asc' : 'desc'; }
+      renderMonteCarloTable();
+    });
+  });
+}
+
 function renderHighlights(){
   const mk = g => {
     const lg = g.league.toLowerCase();
@@ -2086,6 +2283,7 @@ function renderAnalytics(){
   renderHero();
   renderSOSTable();
   renderPowerTable();
+  renderMonteCarloTable();
   renderHighlights();
   renderQualityTable();
   renderRestTable();
