@@ -593,14 +593,10 @@
     flex:0 0 auto; min-width:210px;
     display:flex; flex-direction:column; justify-content:space-around;
   }
-  /* If the first round has a single play-in matchup, pin it to the top
+  /* Silver/Bronze play-in: pin the lone play-in matchup to the top
      at QF-matchup size so it sits directly left of the QF box it feeds. */
-  .br-round:first-child:has(> .br-matchup:only-child){
-    justify-content:flex-start;
-  }
-  .br-round:first-child > .br-matchup:only-child{
-    flex:0 0 auto; min-height:74px;
-  }
+  .br-round.play-in{ justify-content:flex-start; }
+  .br-round.play-in > .br-matchup{ flex:0 0 auto; min-height:74px; }
   .br-round h6{
     font-family:'Fredoka',sans-serif; font-weight:700; font-size:11px;
     letter-spacing:.14em; text-transform:uppercase;
@@ -2040,8 +2036,10 @@ function renderBracketTree(containerId, tierKey, teams){
   </div>`;
   const slotHTML = (slot) => slot.seed !== undefined ? seededSlot(slot.seed) : fromSlot(slot.from);
 
-  host.innerHTML = structure.map(round => `
-    <div class="br-round">
+  host.innerHTML = structure.map((round, idx) => {
+    const isPlayIn = idx === 0 && round.games.length === 1;
+    return `
+    <div class="br-round${isPlayIn ? ' play-in' : ''}">
       <h6>${round.name}</h6>
       ${round.games.map(g => `
         <div class="br-matchup" data-gid="${g.id}">
@@ -2050,8 +2048,8 @@ function renderBracketTree(containerId, tierKey, teams){
           ${slotHTML(g.b)}
         </div>
       `).join('')}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 function stakeFor(game){
   const hi = Math.min(game.hSeed, game.aSeed);
