@@ -90,6 +90,7 @@
   .tab[data-k="Finch"] .dot{background:var(--lav)}
   .tab[data-k="Chamberlain"] .dot{background:var(--mint)}
   .tab[data-k="Combined"] .dot{background:linear-gradient(45deg,var(--pink),var(--lav),var(--mint));}
+  .tab[data-k="Playoffs"] .dot{background:linear-gradient(45deg,#ffd86b,#c9d0dc,#d4a373,#a8744a);}
   .tab[data-k="Analytics"] .dot{background:linear-gradient(45deg,var(--sun),var(--pink-deep));}
   .tab:hover{transform:translateY(-2px)}
   .tab.active{
@@ -122,6 +123,7 @@
   .pill.finch{background:linear-gradient(90deg,#b494ff,#8a66ff)}
   .pill.chamberlain{background:linear-gradient(90deg,#6fe0bd,#33b98e)}
   .pill.combined{background:linear-gradient(90deg,var(--pink-deep),var(--lav),var(--mint))}
+  .pill.playoffs{background:linear-gradient(90deg,#d4a373,#ffd86b,#c9d0dc)}
   .pill.analytics{background:linear-gradient(90deg,#ffba4c,#ff5e97)}
   .hint{font-size:13px;color:var(--ink-soft)}
 
@@ -502,6 +504,86 @@
   }
   .po-note b{font-weight:800}
 
+  /* Playoff brackets */
+  .tier-legend{display:flex; flex-wrap:wrap; gap:8px; margin:4px 0 14px; font-size:12px; font-weight:700}
+  .tier-legend span{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 11px; border-radius:999px; letter-spacing:.05em;
+  }
+  .tier-legend .g{background:#fff3b8; color:#8a6f0a; border:1px solid #f2dc77}
+  .tier-legend .s{background:#eef1f5; color:#5e6875; border:1px solid #d8dde5}
+  .tier-legend .b{background:#f6e4d0; color:#8a4a1a; border:1px solid #e8c99f}
+  .tier-legend .c{background:#e8c3a4; color:#6b2d15; border:1px solid #cfa37d}
+
+  .bracket-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:14px; margin-bottom:18px;
+  }
+  .bracket-col{
+    background:#fff; border:1px solid #ece0f0; border-radius:14px; overflow:hidden;
+    box-shadow:0 4px 12px rgba(120,70,160,0.08);
+  }
+  .bracket-col h5{
+    margin:0; padding:10px 14px;
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:13px; letter-spacing:.14em; text-transform:uppercase;
+    color:#fff; display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .bracket-col.alo h5{background:linear-gradient(90deg,#ff7aa8,#ff5e97)}
+  .bracket-col.finch h5{background:linear-gradient(90deg,#b494ff,#8a66ff)}
+  .bracket-col.chamberlain h5{background:linear-gradient(90deg,#6fe0bd,#33b98e)}
+  .bracket-col h5 .cnt{font-size:10px; opacity:.85; font-weight:700; letter-spacing:.1em}
+
+  .br-row{
+    display:grid; grid-template-columns:32px 1fr auto;
+    gap:10px; align-items:center;
+    padding:7px 12px; font-size:13px;
+    border-top:1px dashed #f0e4f0;
+  }
+  .br-row:first-of-type{border-top:none}
+  .br-row .bseed{font-family:'Fredoka',sans-serif; font-weight:800; font-size:13px; text-align:center}
+  .br-row .btm{font-weight:700; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:6px}
+  .br-row .btm:hover{color:var(--pink-deep)}
+  .br-row .bye-pill{
+    font-size:9px; letter-spacing:.1em; font-weight:800;
+    padding:2px 6px; border-radius:999px;
+    background:#fff3b8; color:#8a6f0a; border:1px solid #f2dc77;
+  }
+  .br-row .brec{font-family:'Fredoka',sans-serif; font-weight:700; font-size:12px; color:var(--ink-soft)}
+
+  .br-row.gold{background:#fff9dd}
+  .br-row.silver{background:#f6f7fa}
+  .br-row.bronze{background:#faedde}
+  .br-row.copper{background:#eed2b5}
+  .br-row.gold .bseed{color:#8a6f0a}
+  .br-row.silver .bseed{color:#5e6875}
+  .br-row.bronze .bseed{color:#8a4a1a}
+  .br-row.copper .bseed{color:#6b2d15}
+  .br-row.tier-break{
+    grid-template-columns:1fr; padding:4px 12px; background:#fafafa;
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-soft); font-weight:800; border-top:1px solid #e8e0ee;
+  }
+
+  .seed-games{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+    gap:12px; margin:8px 0 12px;
+  }
+  .seed-game{
+    background:#fff; border:1px solid #ece0f0; border-radius:12px;
+    padding:12px 14px; box-shadow:0 3px 10px rgba(120,70,160,0.06);
+  }
+  .seed-game .sg-when{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); font-weight:700}
+  .seed-game .sg-match{font-family:'Fredoka',sans-serif; font-weight:700; font-size:17px; margin:4px 0; color:var(--ink)}
+  .seed-game .sg-loc{font-size:12px; color:var(--ink-soft); margin-bottom:6px}
+  .seed-game .sg-stake{font-size:13px; color:var(--ink); line-height:1.4}
+  .seed-game .sg-div-pill{
+    display:inline-block; font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+    padding:2px 8px; border-radius:999px; color:#fff; font-weight:800; margin-left:6px;
+  }
+  .seed-game .sg-div-pill.alo{background:#ff5e97}
+  .seed-game .sg-div-pill.finch{background:#8a66ff}
+  .seed-game .sg-div-pill.chamberlain{background:#33b98e}
+
   .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 16px}
   .stat{
     flex:1 1 110px; min-width:110px; padding:10px 14px;
@@ -613,6 +695,7 @@
   <button class="tab" data-k="Finch"><span class="dot"></span>6U Finch</button>
   <button class="tab" data-k="Chamberlain"><span class="dot"></span>6U Chamberlain</button>
   <button class="tab" data-k="Combined"><span class="dot"></span>All Leagues Combined</button>
+  <button class="tab" data-k="Playoffs"><span class="dot"></span>Playoffs</button>
   <button class="tab" data-k="Analytics"><span class="dot analytics"></span>Analytics</button>
 </nav>
 
@@ -809,6 +892,34 @@
         <span class="hint">Every team across all three leagues, head to head</span>
       </div>
       <div class="tbl-wrap"><table id="tbl-Combined"></table></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="Playoffs">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill playoffs">Playoffs</span>Bracket Projection</h2>
+        <span class="hint">If the regular season ended today</span>
+      </div>
+      <div class="po-note">
+        <b>Format:</b> Every team plays. Top 4 in each division → <b>Gold</b> (12 teams). Seeds 5–7 → <b>Silver</b> (9). Seeds 8–10 → <b>Bronze</b> (9). Seeds 11+ → <b>Copper</b>. <b>#1 seed in each division earns a first-round bye.</b>
+      </div>
+      <div class="tier-legend">
+        <span class="g">Gold · Seeds 1–4</span>
+        <span class="s">Silver · 5–7</span>
+        <span class="b">Bronze · 8–10</span>
+        <span class="c">Copper · 11+</span>
+      </div>
+      <div class="bracket-grid" id="bracket-board"></div>
+      <p class="hint" style="margin-top:4px">Seeding uses win percentage; ties can be broken by the league, but this board sorts by win % then run differential as a reasonable read. Updates as scores come in.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill playoffs">Watch</span>Games Still Deciding Seeds</h2>
+        <span class="hint">Remaining games between top-7 seeded teams across all three divisions</span>
+      </div>
+      <div class="seed-games" id="seed-games"></div>
     </div>
   </section>
 
@@ -1643,9 +1754,120 @@ function renderAnalytics(){
   renderRestTable();
 }
 
+// Playoffs tab
+const DIV_META = {
+  Alo:         { full:'6U Alo',         cls:'alo' },
+  Finch:       { full:'6U Finch',       cls:'finch' },
+  Chamberlain: { full:'6U Chamberlain', cls:'chamberlain' },
+};
+function tierForSeed(seed){
+  if (seed <= 4)  return 'gold';
+  if (seed <= 7)  return 'silver';
+  if (seed <= 10) return 'bronze';
+  return 'copper';
+}
+function seedDivision(divKey){
+  const teams = Object.entries(DATA[divKey] || {}).map(([team, r]) => {
+    const gp = r.W + r.L + r.T;
+    const pct = gp ? (r.W + 0.5*r.T) / gp : 0;
+    return { team, W:r.W, L:r.L, T:r.T, GP:gp, RF:r.RF, RA:r.RA, DIFF:r.RF - r.RA, PCT:pct };
+  });
+  teams.sort((a,b) =>
+    (b.PCT - a.PCT) ||
+    (b.DIFF - a.DIFF) ||
+    (b.W - a.W) ||
+    a.team.localeCompare(b.team)
+  );
+  teams.forEach((t,i) => t.seed = i+1);
+  return teams;
+}
+function stakeFor(game){
+  const hi = Math.min(game.hSeed, game.aSeed);
+  const lo = Math.max(game.hSeed, game.aSeed);
+  if (hi === 1 && lo === 2) return `Potential <b>#1 seed and first-round bye</b> decider — both teams currently top 2 in ${game.divKey}.`;
+  if (hi === 1) return `Top seed vs #${lo}. The #1 seed (and bye) holds if the top team wins.`;
+  if (hi === 2 && lo === 3) return `Sorts out <b>Gold #2 vs #3</b> seeding in ${game.divKey}.`;
+  if (hi === 2) return `#2 seed vs #${lo}. Top-4 Gold positioning.`;
+  if (hi === 3 && lo === 4) return `<b>Gold #3 vs #4</b> seeding in ${game.divKey}.`;
+  if (hi === 3) return `#3 seed vs #${lo}. Gold bracket positioning in ${game.divKey}.`;
+  return `Top-4 Gold seed sorting in ${game.divKey}.`;
+}
+function renderPlayoffs(){
+  const seededByDiv = {};
+  Object.keys(DIV_META).forEach(d => seededByDiv[d] = seedDivision(d));
+
+  // Bracket projection board
+  const board = document.getElementById('bracket-board');
+  if (board){
+    board.innerHTML = Object.keys(DIV_META).map(divKey => {
+      const rows = seededByDiv[divKey];
+      const meta = DIV_META[divKey];
+      let html = '';
+      let currentTier = null;
+      rows.forEach((r, idx) => {
+        const tier = tierForSeed(r.seed);
+        if (tier !== currentTier && idx > 0){
+          html += `<div class="br-row tier-break">${tier}</div>`;
+        }
+        currentTier = tier;
+        const diffStr = r.DIFF >= 0 ? `+${r.DIFF}` : `${r.DIFF}`;
+        const recStr = r.T ? `${r.W}-${r.L}-${r.T}` : `${r.W}-${r.L}`;
+        const byeTag = (r.seed === 1) ? ' <span class="bye-pill">BYE</span>' : '';
+        html += `<div class="br-row ${tier}">
+          <span class="bseed">${r.seed}</span>
+          <button class="btm team-btn" data-team="${encodeURIComponent(r.team)}" data-league="${divKey}">${r.team}${byeTag}</button>
+          <span class="brec">${recStr} · ${diffStr}</span>
+        </div>`;
+      });
+      return `<div class="bracket-col ${meta.cls}">
+        <h5>${meta.full}<span class="cnt">${rows.length} teams</span></h5>
+        ${html}
+      </div>`;
+    }).join('');
+  }
+
+  // Games still deciding seeds: unplayed games where BOTH teams currently seeded 1-4 (Gold)
+  const sgHost = document.getElementById('seed-games');
+  if (sgHost){
+    const games = [];
+    Object.keys(DIV_META).forEach(divKey => {
+      const seedMap = {};
+      seededByDiv[divKey].forEach(r => seedMap[r.team] = r.seed);
+      (GAMES[divKey] || []).forEach(g => {
+        if (!g.home || !g.away) return;
+        if (g.time === 'Bye') return;
+        if (/^\d+$/.test(g.hs) && /^\d+$/.test(g.as)) return; // already played
+        const hSeed = seedMap[g.home], aSeed = seedMap[g.away];
+        if (!hSeed || !aSeed) return;
+        if (hSeed > 4 || aSeed > 4) return;
+        games.push({ ...g, divKey, hSeed, aSeed });
+      });
+    });
+    games.sort((a,b) => {
+      const av = parseDateTime(a.date, a.time);
+      const bv = parseDateTime(b.date, b.time);
+      return (av ? av.getTime() : 1e15) - (bv ? bv.getTime() : 1e15);
+    });
+    if (games.length === 0){
+      sgHost.innerHTML = '<div class="hint" style="padding:4px 2px">No remaining regular-season games between top-4 seeds. Seeds are effectively locked (pending league tiebreakers).</div>';
+    } else {
+      sgHost.innerHTML = games.map(g => {
+        const meta = DIV_META[g.divKey];
+        return `<div class="seed-game">
+          <div class="sg-when">${g.date} · ${g.time}<span class="sg-div-pill ${meta.cls}">${g.divKey}</span></div>
+          <div class="sg-match">#${g.aSeed} ${g.away} @ #${g.hSeed} ${g.home}</div>
+          <div class="sg-loc">${g.loc || 'Location TBD'}</div>
+          <div class="sg-stake">${stakeFor(g)}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
 // initial render
 ['Alo','Finch','Chamberlain','Combined'].forEach(renderTable);
 renderAnalytics();
+renderPlayoffs();
 </script>
 </body>
 </html>
