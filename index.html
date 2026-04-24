@@ -584,6 +584,91 @@
   .seed-game .sg-div-pill.finch{background:#8a66ff}
   .seed-game .sg-div-pill.chamberlain{background:#33b98e}
 
+  /* Bracket tree (left-to-right rounds) */
+  .bracket-tree{
+    display:flex; gap:16px; padding:12px 4px 20px; overflow-x:auto;
+    align-items:stretch;
+  }
+  .br-round{
+    flex:0 0 auto; min-width:210px;
+    display:flex; flex-direction:column; justify-content:space-around;
+  }
+  .br-round h6{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink); text-align:center;
+    margin:0 0 10px; padding:7px 10px; border-radius:8px;
+    background:linear-gradient(90deg,#fff3b8,#ffe48a);
+    box-shadow:0 2px 0 rgba(120,70,160,0.08);
+  }
+  .br-matchup{
+    background:#fff; border:1px solid #ece0f0; border-radius:12px;
+    margin:6px 0; overflow:hidden;
+    flex:1 1 auto; min-height:74px;
+    display:flex; flex-direction:column; justify-content:center;
+    box-shadow:0 3px 10px rgba(120,70,160,0.07);
+  }
+  .br-slot{
+    display:grid; grid-template-columns:34px 1fr auto; gap:8px;
+    align-items:center; padding:7px 11px; font-size:13px;
+    border-bottom:1px dashed #efe4ee;
+  }
+  .br-slot:last-child{border-bottom:none}
+  .br-slot .sd{
+    font-family:'Fredoka',sans-serif; font-weight:800; font-size:11px;
+    color:#fff; background:var(--ink); text-align:center;
+    padding:2px 0; border-radius:6px;
+  }
+  .br-slot .tm{
+    font-family:'Fredoka',sans-serif; font-weight:700; color:var(--ink);
+    cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .br-slot .tm:hover{color:var(--pink-deep)}
+  .br-slot .tm .lg{
+    font-size:9px; font-weight:700; color:var(--ink-soft);
+    letter-spacing:.08em; margin-left:4px; padding:1px 5px;
+    border-radius:4px; background:rgba(195,164,255,0.15);
+  }
+  .br-slot .rec{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:11px;
+    color:var(--ink-soft);
+  }
+  .br-slot.tbd{background:#faf7fc}
+  .br-slot.tbd .sd{background:#c9c0d0; color:#fff}
+  .br-slot.tbd .tm{color:#998aad; font-style:italic; cursor:default; font-weight:600}
+  .br-slot.tbd .tm:hover{color:#998aad}
+  .br-slot.top-seed{background:#fff9dd}
+  .br-slot.top-seed .sd{background:#b8860b; color:#fff}
+  .vs{
+    text-align:center; font-family:'Fredoka',sans-serif; font-weight:800;
+    font-size:10px; letter-spacing:.18em; color:var(--ink-soft);
+    padding:2px 0; background:#f8f3f9; border-top:1px dashed #efe4ee; border-bottom:1px dashed #efe4ee;
+  }
+
+  /* Tier-themed bracket tree colors */
+  .bracket-tree.silver .br-round h6{background:linear-gradient(90deg,#e1e5ee,#c9d0dc); color:#3a4351}
+  .bracket-tree.bronze .br-round h6{background:linear-gradient(90deg,#f6e4d0,#d4a373); color:#5e3412}
+  .bracket-tree.copper .br-round h6{background:linear-gradient(90deg,#e8c3a4,#c08457); color:#fff}
+
+  .bracket-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:12px; flex-wrap:wrap; margin:6px 0 0;
+  }
+  .bracket-head .bh-title{
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:20px;
+    color:var(--ink); margin:0;
+  }
+  .bracket-head .bh-sub{font-size:12px; color:var(--ink-soft)}
+  .bracket-tier-ribbon{
+    display:inline-block; font-size:11px; font-weight:800; letter-spacing:.14em;
+    text-transform:uppercase; padding:4px 10px; border-radius:999px;
+    margin-right:8px;
+  }
+  .bracket-tier-ribbon.gold{background:#fff3b8; color:#8a6f0a; border:1px solid #f2dc77}
+  .bracket-tier-ribbon.silver{background:#eef1f5; color:#5e6875; border:1px solid #d8dde5}
+  .bracket-tier-ribbon.bronze{background:#f6e4d0; color:#8a4a1a; border:1px solid #e8c99f}
+  .bracket-tier-ribbon.copper{background:#e8c3a4; color:#6b2d15; border:1px solid #cfa37d}
+
   .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 16px}
   .stat{
     flex:1 1 110px; min-width:110px; padding:10px 14px;
@@ -917,9 +1002,45 @@
     <div class="card">
       <div class="card-head">
         <h2 class="card-title"><span class="pill playoffs">Watch</span>Games Still Deciding Seeds</h2>
-        <span class="hint">Remaining games between top-7 seeded teams across all three divisions</span>
+        <span class="hint">Remaining games between top-4 seeded teams across all three divisions</span>
       </div>
       <div class="seed-games" id="seed-games"></div>
+    </div>
+
+    <div class="card">
+      <div class="bracket-head">
+        <h3 class="bh-title"><span class="bracket-tier-ribbon gold">Gold</span>12-Team Bracket</h3>
+        <span class="bh-sub">Top 4 seeds in each division · 4 byes to Quarterfinals</span>
+      </div>
+      <div class="bracket-tree" id="tree-Gold"></div>
+    </div>
+
+    <div class="card">
+      <div class="bracket-head">
+        <h3 class="bh-title"><span class="bracket-tier-ribbon silver">Silver</span>9-Team Bracket</h3>
+        <span class="bh-sub">Seeds 5–7 in each division · #1 seed bye + 8/9 play-in</span>
+      </div>
+      <div class="bracket-tree silver" id="tree-Silver"></div>
+    </div>
+
+    <div class="card">
+      <div class="bracket-head">
+        <h3 class="bh-title"><span class="bracket-tier-ribbon bronze">Bronze</span>9-Team Bracket</h3>
+        <span class="bh-sub">Seeds 8–10 in each division · #1 seed bye + 8/9 play-in</span>
+      </div>
+      <div class="bracket-tree bronze" id="tree-Bronze"></div>
+    </div>
+
+    <div class="card">
+      <div class="bracket-head">
+        <h3 class="bh-title"><span class="bracket-tier-ribbon copper">Copper</span>7-Team Bracket</h3>
+        <span class="bh-sub">Seeds 11+ across divisions · #1 seed bye to Semifinals</span>
+      </div>
+      <div class="bracket-tree copper" id="tree-Copper"></div>
+    </div>
+
+    <div class="po-note" style="margin-top:14px">
+      <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper) and that <b>#1 division seeds earn byes</b>. Round-by-round matchup pairings shown above follow standard single-elimination templates (top seed vs lowest seed, working inward); the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
     </div>
   </section>
 
@@ -1318,10 +1439,18 @@ document.addEventListener('click', e => {
   const gowBtn = e.target.closest('.gow-preview-btn');
   if (gowBtn){ openGowModal(); return; }
   const btn = e.target.closest('.team-btn');
-  if (!btn) return;
-  const team = decodeURIComponent(btn.dataset.team);
-  const league = btn.dataset.league;
-  openTeamModal(league, team);
+  if (btn){
+    const team = decodeURIComponent(btn.dataset.team);
+    const league = btn.dataset.league;
+    openTeamModal(league, team);
+    return;
+  }
+  const slotTm = e.target.closest('.br-slot .tm[data-team]');
+  if (slotTm){
+    const team = decodeURIComponent(slotTm.dataset.team);
+    const league = slotTm.dataset.league;
+    openTeamModal(league, team);
+  }
 });
 
 function openGowModal(){
@@ -1770,7 +1899,7 @@ function seedDivision(divKey){
   const teams = Object.entries(DATA[divKey] || {}).map(([team, r]) => {
     const gp = r.W + r.L + r.T;
     const pct = gp ? (r.W + 0.5*r.T) / gp : 0;
-    return { team, W:r.W, L:r.L, T:r.T, GP:gp, RF:r.RF, RA:r.RA, DIFF:r.RF - r.RA, PCT:pct };
+    return { team, W:r.W, L:r.L, T:r.T, GP:gp, RF:r.RF, RA:r.RA, DIFF:r.RF - r.RA, PCT:pct, divKey };
   });
   teams.sort((a,b) =>
     (b.PCT - a.PCT) ||
@@ -1780,6 +1909,141 @@ function seedDivision(divKey){
   );
   teams.forEach((t,i) => t.seed = i+1);
   return teams;
+}
+
+// Cross-division bracket structures. Matchup templates follow standard single-elim conventions.
+const BRACKET_12 = [
+  { name:'Round 1', games:[
+    {id:'G12-R1a', a:{seed:8},  b:{seed:9}},
+    {id:'G12-R1b', a:{seed:5},  b:{seed:12}},
+    {id:'G12-R1c', a:{seed:7},  b:{seed:10}},
+    {id:'G12-R1d', a:{seed:6},  b:{seed:11}}
+  ]},
+  { name:'Quarterfinals', games:[
+    {id:'G12-QF1', a:{seed:1}, b:{from:'G12-R1a'}},
+    {id:'G12-QF2', a:{seed:4}, b:{from:'G12-R1b'}},
+    {id:'G12-QF3', a:{seed:2}, b:{from:'G12-R1c'}},
+    {id:'G12-QF4', a:{seed:3}, b:{from:'G12-R1d'}}
+  ]},
+  { name:'Semifinals', games:[
+    {id:'G12-SF1', a:{from:'G12-QF1'}, b:{from:'G12-QF2'}},
+    {id:'G12-SF2', a:{from:'G12-QF3'}, b:{from:'G12-QF4'}}
+  ]},
+  { name:'Championship', games:[
+    {id:'G12-F',   a:{from:'G12-SF1'}, b:{from:'G12-SF2'}}
+  ]}
+];
+
+// 9-team bracket: 8v9 play-in, then 8-team single-elim with #1 getting the play-in winner.
+const BRACKET_9 = [
+  { name:'Play-In', games:[
+    {id:'G9-PI',  a:{seed:8}, b:{seed:9}}
+  ]},
+  { name:'Quarterfinals', games:[
+    {id:'G9-QF1', a:{seed:1}, b:{from:'G9-PI'}},
+    {id:'G9-QF2', a:{seed:4}, b:{seed:5}},
+    {id:'G9-QF3', a:{seed:2}, b:{seed:7}},
+    {id:'G9-QF4', a:{seed:3}, b:{seed:6}}
+  ]},
+  { name:'Semifinals', games:[
+    {id:'G9-SF1', a:{from:'G9-QF1'}, b:{from:'G9-QF2'}},
+    {id:'G9-SF2', a:{from:'G9-QF3'}, b:{from:'G9-QF4'}}
+  ]},
+  { name:'Championship', games:[
+    {id:'G9-F',   a:{from:'G9-SF1'}, b:{from:'G9-SF2'}}
+  ]}
+];
+
+// 7-team bracket: #1 seed gets a bye to the semifinals.
+const BRACKET_7 = [
+  { name:'Quarterfinals', games:[
+    {id:'G7-QF1', a:{seed:4}, b:{seed:5}},
+    {id:'G7-QF2', a:{seed:3}, b:{seed:6}},
+    {id:'G7-QF3', a:{seed:2}, b:{seed:7}}
+  ]},
+  { name:'Semifinals', games:[
+    {id:'G7-SF1', a:{seed:1},         b:{from:'G7-QF1'}},
+    {id:'G7-SF2', a:{from:'G7-QF2'},  b:{from:'G7-QF3'}}
+  ]},
+  { name:'Championship', games:[
+    {id:'G7-F',   a:{from:'G7-SF1'},  b:{from:'G7-SF2'}}
+  ]}
+];
+
+function pickBracket(n){
+  if (n === 12) return BRACKET_12;
+  if (n === 9)  return BRACKET_9;
+  if (n === 7)  return BRACKET_7;
+  return null;
+}
+
+// Pool seeds across divisions into the four tiers, then re-rank within each tier.
+function buildTierFields(seededByDiv){
+  const pool = { Gold:[], Silver:[], Bronze:[], Copper:[] };
+  Object.keys(seededByDiv).forEach(divKey => {
+    seededByDiv[divKey].forEach(r => {
+      const tier = tierForSeed(r.seed);
+      const bucket = tier === 'gold' ? 'Gold'
+                   : tier === 'silver' ? 'Silver'
+                   : tier === 'bronze' ? 'Bronze'
+                   : 'Copper';
+      pool[bucket].push({ ...r, divSeed: r.seed });
+    });
+  });
+  Object.keys(pool).forEach(k => {
+    pool[k].sort((a,b) =>
+      (b.PCT - a.PCT) ||
+      (b.DIFF - a.DIFF) ||
+      (a.divSeed - b.divSeed) ||
+      a.team.localeCompare(b.team)
+    );
+    pool[k].forEach((t,i) => t.tierSeed = i+1);
+  });
+  return pool;
+}
+
+function renderBracketTree(containerId, tierKey, teams){
+  const host = document.getElementById(containerId);
+  if (!host) return;
+  const structure = pickBracket(teams.length);
+  if (!structure){
+    host.innerHTML = `<div class="hint" style="padding:12px">Bracket template unavailable for ${teams.length} teams.</div>`;
+    return;
+  }
+  const bySeed = {};
+  teams.forEach(t => { bySeed[t.tierSeed] = t; });
+
+  const seededSlot = (seedNum) => {
+    const t = bySeed[seedNum];
+    if (!t) return `<div class="br-slot tbd"><span class="sd">${seedNum}</span><span class="tm">TBD</span><span class="rec"></span></div>`;
+    const topCls = seedNum === 1 ? 'top-seed' : '';
+    const divCls = (DIV_META[t.divKey] && DIV_META[t.divKey].cls) || '';
+    const recStr = t.T ? `${t.W}-${t.L}-${t.T}` : `${t.W}-${t.L}`;
+    return `<div class="br-slot ${topCls}">
+      <span class="sd">${seedNum}</span>
+      <span class="tm" data-team="${encodeURIComponent(t.team)}" data-league="${t.divKey}" title="${t.team} · ${t.divKey}">${t.team}<span class="lg ${divCls}">${t.divKey} #${t.divSeed}</span></span>
+      <span class="rec">${recStr}</span>
+    </div>`;
+  };
+  const fromSlot = (fromId) => `<div class="br-slot tbd">
+    <span class="sd">—</span>
+    <span class="tm">Winner ${fromId}</span>
+    <span class="rec"></span>
+  </div>`;
+  const slotHTML = (slot) => slot.seed !== undefined ? seededSlot(slot.seed) : fromSlot(slot.from);
+
+  host.innerHTML = structure.map(round => `
+    <div class="br-round">
+      <h6>${round.name}</h6>
+      ${round.games.map(g => `
+        <div class="br-matchup" data-gid="${g.id}">
+          ${slotHTML(g.a)}
+          <div class="vs">VS</div>
+          ${slotHTML(g.b)}
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
 }
 function stakeFor(game){
   const hi = Math.min(game.hSeed, game.aSeed);
@@ -1795,6 +2059,12 @@ function stakeFor(game){
 function renderPlayoffs(){
   const seededByDiv = {};
   Object.keys(DIV_META).forEach(d => seededByDiv[d] = seedDivision(d));
+  const tierFields = buildTierFields(seededByDiv);
+
+  renderBracketTree('tree-Gold',   'Gold',   tierFields.Gold);
+  renderBracketTree('tree-Silver', 'Silver', tierFields.Silver);
+  renderBracketTree('tree-Bronze', 'Bronze', tierFields.Bronze);
+  renderBracketTree('tree-Copper', 'Copper', tierFields.Copper);
 
   // Bracket projection board
   const board = document.getElementById('bracket-board');
