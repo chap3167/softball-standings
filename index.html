@@ -91,11 +91,20 @@
   .tab[data-k="Chamberlain"] .dot{background:var(--mint)}
   .tab[data-k="Combined"] .dot{background:linear-gradient(45deg,var(--pink),var(--lav),var(--mint));}
   .tab[data-k="Playoffs"] .dot{background:linear-gradient(45deg,#ffd86b,#c9d0dc,#d4a373,#a8744a);}
+  .tab[data-k="Predictions"] .dot{background:linear-gradient(45deg,#8b5cf6,#ec4899,#f59e0b);}
   .tab[data-k="Analytics"] .dot{background:linear-gradient(45deg,var(--sun),var(--pink-deep));}
   .tab:hover{transform:translateY(-2px)}
   .tab.active{
     background:linear-gradient(90deg, var(--pink-deep), var(--lav));
     color:white; box-shadow:var(--shadow);
+  }
+  @media (max-width:760px){
+    .tabs{
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:10px; justify-content:stretch;
+    }
+    .tabs .tab{justify-content:center; padding:12px 14px; font-size:14px}
+    .tabs .tab[data-k="Combined"]{grid-column:1 / -1}
   }
 
   main{position:relative; z-index:1; padding:24px 16px 80px; max-width:1200px; margin:0 auto}
@@ -816,6 +825,105 @@
     .bar{width:60px}
     .team .lg{display:none}
   }
+
+  /* Predictions — Game score predictor */
+  .pred-toolbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin:0 6px 14px;
+  }
+  .pred-nav{
+    background:#fff; border:2px solid var(--ink);
+    border-radius:10px; padding:8px 14px;
+    font-size:16px; cursor:pointer;
+    box-shadow:0 3px 0 var(--ink);
+    color:var(--ink); font-weight:700; line-height:1;
+  }
+  .pred-nav:hover{background:#fff6fb}
+  .pred-nav:active{transform:translateY(2px); box-shadow:0 1px 0 var(--ink)}
+  .pred-nav:disabled{opacity:.4; cursor:not-allowed; box-shadow:0 3px 0 var(--ink)}
+  .pred-date-input{
+    font-family:'Chivo Mono',monospace; font-size:14px; padding:8px 10px;
+    border:2px solid var(--ink); border-radius:10px;
+    background:#fff; color:var(--ink);
+  }
+  .pred-date-label{
+    font-family:'Fredoka',sans-serif; font-weight:600;
+    font-size:14px; letter-spacing:.04em; color:var(--ink);
+    margin-left:6px; text-transform:uppercase;
+  }
+  .pred-table{
+    width:100%; border-collapse:separate; border-spacing:0;
+    background:#fff; border-radius:12px; overflow:hidden;
+    border:2px solid var(--ink);
+    font-family:'Chivo Mono',monospace;
+  }
+  .pred-table thead tr{background:var(--ink); color:#fff}
+  .pred-table th{
+    padding:10px 12px; text-align:left;
+    font-family:'Fredoka',sans-serif; font-weight:600;
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:#ffd6ec; cursor:default; border-bottom:none;
+    position:static; background:transparent;
+  }
+  .pred-table td{padding:12px; font-size:13px; color:var(--ink); vertical-align:top; border-bottom:1px dashed #f0e0ed}
+  .pred-table tbody tr:last-child td{border-bottom:none}
+  .pred-table tbody tr.pred-hit{background:#eaf7ec}
+  .pred-table tbody tr.pred-miss{background:#fbeaec}
+  .pred-table .pred-lg{width:90px}
+  .pred-table .pred-time{width:80px; color:var(--ink); font-weight:700}
+  .pred-lg-time-inline, .pred-lg-loc-inline{display:none}
+  .pred-div-pill{
+    display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px;
+    font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#fff;
+  }
+  .pred-div-pill.alo{background:#ec4899}
+  .pred-div-pill.finch{background:#8b5cf6}
+  .pred-div-pill.chamberlain{background:#14b8a6}
+  .pred-matchup{display:flex; flex-direction:column; gap:2px}
+  .pred-matchup strong{color:var(--ink); font-weight:700}
+  .pred-matchup .pred-loc{font-size:11px; color:var(--ink-soft); margin-top:2px; font-family:'Chivo Mono',monospace}
+  .pred-pred .pred-winner, .pred-actual .pred-winner{font-weight:700; color:var(--ink); font-family:'Chivo Mono',monospace; font-size:13px; line-height:1.2}
+  .pred-pred .pred-score{font-size:11px; color:var(--ink-soft); letter-spacing:.05em; margin-top:2px; font-weight:700}
+  .pred-actual .pred-score.actual-score{font-size:12px; color:#0f7a2b; font-weight:800; margin-top:2px}
+  .pred-table tr.pred-miss .pred-actual .pred-score.actual-score{color:#b01e33}
+  .pred-na{color:#c6b9d1; font-size:16px}
+  .pred-empty{
+    background:#fff; border:2px dashed #e9d9f0;
+    border-radius:12px; padding:30px; text-align:center;
+    color:var(--ink-soft); font-size:14px; margin:0 6px;
+  }
+  .pred-footer{font-size:12px; color:var(--ink-soft); margin:14px 6px 0; line-height:1.5}
+  .pred-footer strong{color:var(--ink)}
+  .pred-footer em{font-style:italic; color:var(--pink-deep); font-weight:600}
+  @media (max-width:700px){
+    .pred-table{table-layout:fixed}
+    .pred-table thead th:nth-child(2),
+    .pred-table .pred-time{display:none}
+    .pred-table th{font-size:9px; padding:8px 4px}
+    .pred-table td{font-size:11px; padding:8px 5px; vertical-align:top}
+    .pred-table .pred-div-pill.chamberlain{font-size:0}
+    .pred-table .pred-div-pill.chamberlain::before{
+      content:"CHAMBER"; font-size:10px; font-weight:700; letter-spacing:.04em;
+    }
+    .pred-table .pred-lg{width:62px}
+    .pred-table .pred-pred, .pred-table .pred-actual{width:80px}
+    .pred-lg-time-inline{
+      display:block; margin-top:6px;
+      font-family:'Chivo Mono',monospace; font-size:10px;
+      font-weight:700; color:var(--ink); line-height:1.1;
+    }
+    .pred-lg-loc-inline{
+      display:block; margin-top:3px;
+      font-family:'Chivo Mono',monospace; font-size:10px;
+      color:var(--ink-soft); line-height:1.1;
+    }
+    .pred-matchup strong{font-size:11px}
+    .pred-matchup .pred-loc{display:none}
+    .pred-pred .pred-winner, .pred-actual .pred-winner{font-size:10.5px; line-height:1.2; word-break:break-word}
+    .pred-pred .pred-score, .pred-actual .pred-score.actual-score{font-size:10px}
+    .pred-date-input{font-size:13px}
+    .pred-date-label{font-size:11px}
+  }
 </style>
 </head>
 <body>
@@ -855,16 +963,17 @@
 </header>
 
 <nav class="tabs" role="tablist">
-  <button class="tab active" data-k="Alo"><span class="dot"></span>6U Alo</button>
+  <button class="tab active" data-k="Combined"><span class="dot"></span>All Leagues Combined</button>
+  <button class="tab" data-k="Alo"><span class="dot"></span>6U Alo</button>
   <button class="tab" data-k="Finch"><span class="dot"></span>6U Finch</button>
   <button class="tab" data-k="Chamberlain"><span class="dot"></span>6U Chamberlain</button>
-  <button class="tab" data-k="Combined"><span class="dot"></span>All Leagues Combined</button>
   <button class="tab" data-k="Playoffs"><span class="dot"></span>Playoffs</button>
   <button class="tab" data-k="Analytics"><span class="dot analytics"></span>Analytics</button>
+  <button class="tab" data-k="Predictions"><span class="dot"></span>Predictions</button>
 </nav>
 
 <main>
-  <section class="view active" data-view="Alo">
+  <section class="view" data-view="Alo">
     <section class="recap-card" id="recap-alo">
       <div class="recap-kicker">
         <span class="recap-badge">Recap</span>
@@ -984,7 +1093,7 @@
     </div>
   </section>
 
-  <section class="view" data-view="Combined">
+  <section class="view active" data-view="Combined">
     <section class="recap-card combined" id="recap-combined">
       <div class="recap-kicker">
         <span class="recap-badge">State of 6U</span>
@@ -1120,6 +1229,26 @@
 
     <div class="po-note" style="margin-top:14px">
       <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper). <b>Gold is double-elimination</b> — top 4 seeds bye to Round 2; lose once, you drop to the Loser's Bracket; lose twice, you're out. Silver and Bronze are single-elimination with one play-in game (seeds 8 vs 9); Copper's top seed byes to the semifinal. Round-by-round pairings follow standard seeding templates; the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
+    </div>
+  </section>
+
+  <section class="view" data-view="Predictions">
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title"><span class="pill playoffs">Predictions</span>Game Predictions</h2>
+        <span class="hint">Projected final scores for every game, updated as the season progresses</span>
+      </div>
+      <div class="note">
+        Projected final scores for every game on the schedule, computed from each team's runs-per-game profile at the time. Once a score posts, actual lands next to prediction. <strong>Green row</strong> = prediction got it right. <strong>Red row</strong> = wrong.
+      </div>
+      <div class="pred-toolbar">
+        <button class="pred-nav" id="pred-prev" aria-label="Previous date">◂</button>
+        <input type="date" class="pred-date-input" id="pred-date-input" />
+        <button class="pred-nav" id="pred-next" aria-label="Next date">▸</button>
+        <div class="pred-date-label" id="pred-date-label"></div>
+      </div>
+      <div id="pred-table-wrap"></div>
+      <div class="pred-footer"><strong>Model:</strong> Bill James runs-matrix, strength-of-schedule adjusted, shrunk toward division mean. For each game, a team's raw runs-per-game (and runs-allowed-per-game) gets scaled by how tough the opponents they've faced have been — teams who scored against strong defenses get a bump, teams who padded stats against weak offenses get pulled down. Rates are then shrunk toward division average with a 5-game prior so early-season extremes don't dominate. Projected runs for Team A vs Team B = (A's adjusted RPG × B's adjusted RAPG) ÷ division average. All stats use only games played <em>before</em> the game being predicted, so past games are a fair backtest.</div>
     </div>
   </section>
 
@@ -2360,10 +2489,248 @@ function renderPlayoffs(){
   }
 }
 
+// ---------- PREDICTIONS: Bill James runs-matrix score predictor ----------
+// Every game is predicted using ONLY stats from games played before it, so
+// past games are a fair backtest. Raw runs-per-game is SOS-adjusted against
+// the division's average opponent, then shrunk toward division mean with a
+// 5-game prior so early-season extremes don't dominate.
+const SHRINK_K = 5;
+
+function _pEsc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// "Wed 4/15" -> "2026-04-15" (Feb–Dec = 2026, Jan = 2027; matches existing nextSortKey convention)
+function dateToISO(dateStr){
+  const md = /(\d+)\/(\d+)/.exec(dateStr || '');
+  if (!md) return null;
+  const mo = +md[1], da = +md[2];
+  const yr = mo >= 2 ? 2026 : 2027;
+  return `${yr}-${String(mo).padStart(2,'0')}-${String(da).padStart(2,'0')}`;
+}
+// "5:45 PM" -> "17:45" for stable sort
+function timeToHHMM(tStr){
+  const tm = /(\d+):(\d+)\s*(AM|PM)/i.exec(tStr || '');
+  if (!tm) return '00:00';
+  let h = +tm[1] % 12;
+  if (/PM/i.test(tm[3])) h += 12;
+  return `${String(h).padStart(2,'0')}:${String(+tm[2]).padStart(2,'0')}`;
+}
+function fmtPredDate(iso){
+  const [y, m, d] = iso.split('-');
+  const date = new Date(+y, +m - 1, +d);
+  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${DOW[date.getDay()]} ${MON[+m - 1]} ${+d}`;
+}
+function todayISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function computePredictedGames(){
+  const all = [];
+  Object.keys(DIV_META).forEach(divKey => {
+    (GAMES[divKey] || []).forEach(g => {
+      if (!g.home || !g.away) return;
+      if (g.time === 'Bye') return;
+      const iso = dateToISO(g.date);
+      if (!iso) return;
+      const s1 = /^\d+$/.test(g.as) ? +g.as : undefined;
+      const s2 = /^\d+$/.test(g.hs) ? +g.hs : undefined;
+      all.push({
+        divKey, iso, hhmm: timeToHHMM(g.time),
+        date: g.date, time: g.time, loc: g.loc || '',
+        t1: g.away, t2: g.home, s1, s2
+      });
+    });
+  });
+  all.sort((a,b) => (a.iso + a.hhmm).localeCompare(b.iso + b.hhmm));
+
+  const st = {};
+  const key = (divKey, team) => `${divKey}|${team}`;
+  const init = (divKey, team) => {
+    const k = key(divKey, team);
+    if (!st[k]) st[k] = { divKey, rf:0, ra:0, gp:0, opps:[] };
+  };
+
+  function divAvgRPG(divKey){
+    let rf = 0, gp = 0;
+    Object.values(st).forEach(s => {
+      if (s.divKey === divKey){ rf += s.rf; gp += s.gp; }
+    });
+    return gp ? rf / gp : 0;
+  }
+  function oppAvgRate(divKey, team, which){
+    const s = st[key(divKey, team)];
+    if (!s || !s.opps.length) return null;
+    let total = 0, n = 0;
+    for (const opp of s.opps){
+      const os = st[key(divKey, opp)];
+      if (os && os.gp > 0){ total += os[which] / os.gp; n++; }
+    }
+    return n ? total / n : null;
+  }
+  function adjRate(divKey, team, which, divAvg){
+    const s = st[key(divKey, team)];
+    if (!s || s.gp === 0 || divAvg === 0) return divAvg;
+    const raw = s[which] / s.gp;
+    const oppWhich = which === 'rf' ? 'ra' : 'rf';
+    const oppAvg = oppAvgRate(divKey, team, oppWhich);
+    const sosAdjusted = (oppAvg && oppAvg > 0) ? raw * (divAvg / oppAvg) : raw;
+    return (sosAdjusted * s.gp + divAvg * SHRINK_K) / (s.gp + SHRINK_K);
+  }
+
+  const out = [];
+  all.forEach(g => {
+    init(g.divKey, g.t1);
+    init(g.divKey, g.t2);
+    let pred = null;
+    const divAvg = divAvgRPG(g.divKey);
+    const s1 = st[key(g.divKey, g.t1)];
+    const s2 = st[key(g.divKey, g.t2)];
+    if (s1.gp >= 1 && s2.gp >= 1 && divAvg > 0){
+      const rpg1  = adjRate(g.divKey, g.t1, 'rf', divAvg);
+      const rapg1 = adjRate(g.divKey, g.t1, 'ra', divAvg);
+      const rpg2  = adjRate(g.divKey, g.t2, 'rf', divAvg);
+      const rapg2 = adjRate(g.divKey, g.t2, 'ra', divAvg);
+      const p1 = (rpg1 * rapg2) / divAvg;
+      const p2 = (rpg2 * rapg1) / divAvg;
+      pred = {
+        p1: Math.round(p1 * 10) / 10,
+        p2: Math.round(p2 * 10) / 10,
+        winner: p1 > p2 ? g.t1 : (p2 > p1 ? g.t2 : null)
+      };
+    }
+    out.push({ ...g, pred });
+    if (g.s1 !== undefined && g.s2 !== undefined){
+      s1.rf += g.s1; s1.ra += g.s2; s1.gp++; s1.opps.push(g.t2);
+      s2.rf += g.s2; s2.ra += g.s1; s2.gp++; s2.opps.push(g.t1);
+    }
+  });
+  return out;
+}
+
+let PRED_GAMES = [];
+let PRED_DATES = [];
+let CURRENT_PRED_DATE = null;
+
+function closestDateWithGames(target){
+  if (PRED_DATES.length === 0) return null;
+  if (PRED_DATES.includes(target)) return target;
+  const future = PRED_DATES.find(d => d >= target);
+  return future || PRED_DATES[PRED_DATES.length - 1];
+}
+
+function renderPredictionsTable(dateISO){
+  const rows = PRED_GAMES.filter(g => g.iso === dateISO);
+  if (rows.length === 0){
+    return `<div class="pred-empty">No games scheduled for ${_pEsc(fmtPredDate(dateISO))}.</div>`;
+  }
+  const rowHTML = rows.map(g => {
+    const pillCls = g.divKey.toLowerCase();
+    const lgCell = `<span class="pred-div-pill ${pillCls}">${g.divKey}</span><span class="pred-lg-time-inline">${_pEsc(g.time)}</span><span class="pred-lg-loc-inline">${_pEsc(g.loc)}</span>`;
+    const matchup = `<span class="pred-matchup"><strong>${_pEsc(g.t1)}</strong> at <strong>${_pEsc(g.t2)}</strong><span class="pred-loc">${_pEsc(g.loc)}</span></span>`;
+
+    let predCell;
+    if (g.pred && g.pred.winner){
+      const wName = g.pred.winner;
+      const wScore = wName === g.t1 ? g.pred.p1 : g.pred.p2;
+      const lScore = wName === g.t1 ? g.pred.p2 : g.pred.p1;
+      predCell = `<div class="pred-winner">${_pEsc(wName)}</div><div class="pred-score">WIN ${wScore.toFixed(1)}–${lScore.toFixed(1)}</div>`;
+    } else if (g.pred){
+      predCell = `<div class="pred-winner">Coin flip</div><div class="pred-score">${g.pred.p1.toFixed(1)}–${g.pred.p2.toFixed(1)}</div>`;
+    } else {
+      predCell = `<div class="pred-na">—</div>`;
+    }
+
+    let actualCell, rowClass = '';
+    if (g.s1 !== undefined && g.s2 !== undefined){
+      const actualWinner = g.s1 > g.s2 ? g.t1 : (g.s2 > g.s1 ? g.t2 : null);
+      if (actualWinner){
+        const wScore = actualWinner === g.t1 ? g.s1 : g.s2;
+        const lScore = actualWinner === g.t1 ? g.s2 : g.s1;
+        actualCell = `<div class="pred-winner">${_pEsc(actualWinner)}</div><div class="pred-score actual-score">WON ${wScore}–${lScore}</div>`;
+      } else {
+        actualCell = `<div class="pred-winner">Tie</div><div class="pred-score actual-score">${g.s1}–${g.s2}</div>`;
+      }
+      if (g.pred && g.pred.winner && actualWinner){
+        rowClass = g.pred.winner === actualWinner ? 'pred-hit' : 'pred-miss';
+      }
+    } else {
+      actualCell = `<div class="pred-na">—</div>`;
+    }
+
+    return `<tr class="${rowClass}">
+      <td class="pred-lg">${lgCell}</td>
+      <td class="pred-time">${_pEsc(g.time)}</td>
+      <td class="pred-matchup-cell">${matchup}</td>
+      <td class="pred-pred">${predCell}</td>
+      <td class="pred-actual">${actualCell}</td>
+    </tr>`;
+  }).join('');
+
+  return `<table class="pred-table">
+    <thead><tr>
+      <th>Div</th><th>Time</th><th>Matchup</th><th>Prediction</th><th>Actual</th>
+    </tr></thead>
+    <tbody>${rowHTML}</tbody>
+  </table>`;
+}
+
+function refreshPredictions(){
+  if (!CURRENT_PRED_DATE) return;
+  const wrap = document.getElementById('pred-table-wrap');
+  const input = document.getElementById('pred-date-input');
+  const label = document.getElementById('pred-date-label');
+  const prev = document.getElementById('pred-prev');
+  const next = document.getElementById('pred-next');
+  if (wrap) wrap.innerHTML = renderPredictionsTable(CURRENT_PRED_DATE);
+  if (input) input.value = CURRENT_PRED_DATE;
+  if (label) label.textContent = fmtPredDate(CURRENT_PRED_DATE);
+  const i = PRED_DATES.indexOf(CURRENT_PRED_DATE);
+  if (prev) prev.disabled = i <= 0;
+  if (next) next.disabled = i < 0 || i >= PRED_DATES.length - 1;
+}
+
+function initPredictions(){
+  PRED_GAMES = computePredictedGames();
+  PRED_DATES = Array.from(new Set(PRED_GAMES.map(g => g.iso))).sort();
+  if (PRED_DATES.length === 0) return;
+  CURRENT_PRED_DATE = closestDateWithGames(todayISO()) || PRED_DATES[0];
+
+  const input = document.getElementById('pred-date-input');
+  if (input){
+    input.min = PRED_DATES[0];
+    input.max = PRED_DATES[PRED_DATES.length - 1];
+  }
+  const prev = document.getElementById('pred-prev');
+  const next = document.getElementById('pred-next');
+  if (prev) prev.addEventListener('click', () => {
+    const i = PRED_DATES.indexOf(CURRENT_PRED_DATE);
+    if (i > 0){ CURRENT_PRED_DATE = PRED_DATES[i - 1]; refreshPredictions(); }
+  });
+  if (next) next.addEventListener('click', () => {
+    const i = PRED_DATES.indexOf(CURRENT_PRED_DATE);
+    if (i >= 0 && i < PRED_DATES.length - 1){
+      CURRENT_PRED_DATE = PRED_DATES[i + 1];
+      refreshPredictions();
+    }
+  });
+  if (input) input.addEventListener('change', e => {
+    const chosen = e.target.value;
+    if (chosen){
+      CURRENT_PRED_DATE = closestDateWithGames(chosen) || chosen;
+      refreshPredictions();
+    }
+  });
+
+  refreshPredictions();
+}
+
 // initial render
 ['Alo','Finch','Chamberlain','Combined'].forEach(renderTable);
 renderAnalytics();
 renderPlayoffs();
+initPredictions();
 </script>
 </body>
 </html>
