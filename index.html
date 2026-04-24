@@ -1044,7 +1044,7 @@
     </div>
 
     <div class="po-note" style="margin-top:14px">
-      <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper) and that <b>#1 division seeds earn byes</b>. Round-by-round matchup pairings shown above follow standard single-elimination templates (top seed vs lowest seed, working inward); the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
+      <b>Format note:</b> The league has confirmed the four-bracket structure (Gold / Silver / Bronze / Copper). Byes shown here: Gold gives the top 2 pooled seeds a bye (seed 1 straight to the semifinal, seed 2 to the quarterfinal); Silver and Bronze each have one play-in game (seeds 8 vs 9); Copper's top seed byes to the semifinal. Round-by-round matchup pairings follow standard single-elimination templates; the official bracket may adjust these. Team-to-seed mapping updates automatically as scores come in.
     </div>
   </section>
 
@@ -1915,23 +1915,24 @@ function seedDivision(divKey){
   return teams;
 }
 
-// Cross-division bracket structures. Matchup templates follow standard single-elim conventions.
+// 12-team bracket — exactly 2 byes. Seed 1 double-byes to the semifinal;
+// seed 2 byes to the quarterfinal. Seeds 3–12 all play Round 1.
 const BRACKET_12 = [
   { name:'Round 1', games:[
-    {id:'G12-R1a', a:{seed:8},  b:{seed:9}},
-    {id:'G12-R1b', a:{seed:5},  b:{seed:12}},
-    {id:'G12-R1c', a:{seed:7},  b:{seed:10}},
-    {id:'G12-R1d', a:{seed:6},  b:{seed:11}}
+    {id:'G12-R1a', a:{seed:9},  b:{seed:12}},   // seed 1's half
+    {id:'G12-R1b', a:{seed:10}, b:{seed:11}},   // seed 1's half
+    {id:'G12-R1c', a:{seed:3},  b:{seed:8}},    // seed 2's half
+    {id:'G12-R1d', a:{seed:4},  b:{seed:7}},    // seed 2's half
+    {id:'G12-R1e', a:{seed:5},  b:{seed:6}}     // seed 2's half
   ]},
   { name:'Quarterfinals', games:[
-    {id:'G12-QF1', a:{seed:1}, b:{from:'G12-R1a'}},
-    {id:'G12-QF2', a:{seed:4}, b:{from:'G12-R1b'}},
-    {id:'G12-QF3', a:{seed:2}, b:{from:'G12-R1c'}},
-    {id:'G12-QF4', a:{seed:3}, b:{from:'G12-R1d'}}
+    {id:'G12-QFa', a:{from:'G12-R1a'}, b:{from:'G12-R1b'}},   // top — winner plays seed 1
+    {id:'G12-QFb', a:{from:'G12-R1c'}, b:{from:'G12-R1d'}},   // middle
+    {id:'G12-QFc', a:{seed:2},         b:{from:'G12-R1e'}}    // bottom — seed 2 enters
   ]},
   { name:'Semifinals', games:[
-    {id:'G12-SF1', a:{from:'G12-QF1'}, b:{from:'G12-QF2'}},
-    {id:'G12-SF2', a:{from:'G12-QF3'}, b:{from:'G12-QF4'}}
+    {id:'G12-SF1', a:{seed:1},         b:{from:'G12-QFa'}},   // seed 1 enters
+    {id:'G12-SF2', a:{from:'G12-QFb'}, b:{from:'G12-QFc'}}
   ]},
   { name:'Championship', games:[
     {id:'G12-F',   a:{from:'G12-SF1'}, b:{from:'G12-SF2'}}
